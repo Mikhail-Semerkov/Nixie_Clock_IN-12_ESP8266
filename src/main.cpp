@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Global.h>
 #include <in_12_lamp.h>
 #include <synch_clock_udp.h>
 

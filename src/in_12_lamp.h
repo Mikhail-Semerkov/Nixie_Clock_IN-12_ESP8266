@@ -1,16 +1,7 @@
 #include <ShiftRegister74HC595.h>
 #include <GyverTimer.h>
 
-// NIXIE TUBE LAMP
-#define Nixie_Dots 10
-#define Nixie_Lamp_1 11
-#define Nixie_Lamp_2 12
-#define Nixie_Lamp_3 13
-#define Nixie_Lamp_4 14
-// 74HC595 Pins
-#define Data_Pin 13
-#define Clock_Pin 14
-#define Latch_Pin 15
+
 
 uint8 Key_Lamp[5] = {Nixie_Dots, Nixie_Lamp_1, Nixie_Lamp_2, Nixie_Lamp_3, Nixie_Lamp_4};
 ShiftRegister74HC595<2> sr(Data_Pin, Clock_Pin, Latch_Pin);
