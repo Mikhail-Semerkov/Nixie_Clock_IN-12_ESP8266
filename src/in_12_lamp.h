@@ -1,22 +1,3 @@
-#include <ShiftRegister74HC595.h>
-#include <GyverTimer.h>
-
-
-
-uint8 Key_Lamp[5] = {Nixie_Dots, Nixie_Lamp_1, Nixie_Lamp_2, Nixie_Lamp_3, Nixie_Lamp_4};
-ShiftRegister74HC595<2> sr(Data_Pin, Clock_Pin, Latch_Pin);
-
-GTimer Timer_Brightness_Lamp(US);
-
-int Brightness_Lamp = 3;
-int Count_Dots;
-
-int Perebor;
-
-bool Antiotravlenie_Lamp;
-unsigned long Time_Anti_Otravlenie;
-unsigned long Count_Time_Anti_Otravlenie;
-
 void setup_in_12_lamp()
 {
     Timer_Brightness_Lamp.setInterval(3300);
