@@ -1,31 +1,23 @@
-#include <Arduino.h>
-#include <Global.h>
-#include <in_12_lamp.h>
-#include <synch_clock_udp.h>
+#include <global.h>
+#include <wifi_esp.h>
+#include <nixie_lamp.h>
+#include <server_esp.h>
+#include <ws2812.h>
 
 void setup()
 {
-  Serial.begin(115200);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin("Padavan 2.4", "46684668");
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  setup_synch_clock_udp();
+  setup_ws2812();
+  wifi_connect();
+  setup_server();
   setup_in_12_lamp();
 }
 
 void loop()
 {
-
-  UDP_SYNCH();
-  SYNCH_CLOCK();
+  ws2812_effects_sost_wifi(WiFi.status());
+  loop_ws2812();
+  udp_synch();
+  loop_server();
+  loop_nixie_lamp();
+  
 }
