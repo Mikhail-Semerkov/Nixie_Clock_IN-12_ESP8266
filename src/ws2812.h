@@ -2,6 +2,7 @@ void setup_ws2812()
 {
     ws2812fx.init();
     ws2812fx.start();
+    Timer_Load_Sost_wifi.setInterval(1000);
 }
 
 void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t speed)
@@ -23,13 +24,10 @@ void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t s
     }
 }
 
-void loop_ws2812()
-{
-
-    ws2812fx.service();
-}
-
-// uint32_t Color_ws2812[] = {0xFF0000, 0x00FF00, 0x0000FF, 0xFFFFFF, 0xFFFF00, 0x00FFFF, 0xFF00FF};
+// RED 0xFF0000
+// GREEN 0x00FF00
+// BLUE 0x0000FF
+// 0xFFFFFF, 0xFFFF00, 0x00FFFF, 0xFF00FF};
 // WL_NO_SHIELD = 255,
 // WL_IDLE_STATUS = 0,
 // WL_NO_SSID_AVAIL = 1,
@@ -68,6 +66,16 @@ void ws2812_effects_sost_wifi(wl_status_t event)
     else
     {
 
-        select_effects(15, 0x0000FF, 255, 3000);
+        select_effects(15, 0x00FFFF, 20, 3000);
     }
+}
+
+void loop_ws2812()
+{
+    if (Timer_Load_Sost_wifi.isReady())
+    {
+        ws2812_effects_sost_wifi(WiFi.status());
+    }
+
+    ws2812fx.service();
 }

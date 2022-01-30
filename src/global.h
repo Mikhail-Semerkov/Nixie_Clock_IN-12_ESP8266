@@ -33,7 +33,8 @@ GTimer Timer_Brightness_Lamp(US);
 GTimer TimerSecond(MS);
 GTimer TimerEffects(MS);
 
-int Brightness_Lamp = 30;
+int Brightness_Lamp = 20;
+int Brighness_SK = 3300;
 int Count_Dots;
 
 int Perebor;
@@ -49,8 +50,6 @@ void Nixie_Time(String Time, int Brightness);
 /////////////////////////////////       SERVER ESP                ////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 ESP8266WebServer server(80);
 
@@ -76,6 +75,8 @@ String Lamp_Time_Current;
 
 String Time_str;
 
+GTimer Timer_Load_Sost_wifi(MS);
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////          WS2812                 ////////////////////////////
@@ -84,9 +85,10 @@ String Time_str;
 
 #include <WS2812FX.h>
 int Seconds_Start_MK;
+bool Read_Sost;
 
 #define LED_COUNT 3
 #define LED_PIN 12
 
-WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
 
+WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_RGB);

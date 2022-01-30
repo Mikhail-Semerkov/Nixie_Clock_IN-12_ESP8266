@@ -43,11 +43,24 @@ void udp_synch()
 void setup_server()
 {
   httpUpdater.setup(&server, "/");
+  server.on("/json", HTTP_GET, []()
+            {
+                  String
+                  json = "{\n";
+
+                  json += "\"chip_id\":" + String("\"") + ESP.getChipId() + String("\", \n");
+                  json += "\"free_heap\":" + String("\"") + ESP.getFreeHeap() + String("\"");
+
+                  json += "\n}";
+
+                  server.send(200, "text/json", json);
+                  json = String(); });
 
   server.begin();
 }
 
 void loop_server()
 {
+  udp_synch();
   server.handleClient();
 }

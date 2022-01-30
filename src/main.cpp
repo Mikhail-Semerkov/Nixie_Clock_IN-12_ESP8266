@@ -6,18 +6,15 @@
 
 void setup()
 {
-  setup_ws2812();
-  wifi_connect();
+  setup_wifi_esp();
+  //setup_ws2812();
   setup_server();
-  setup_in_12_lamp();
+  setup_nixie_lamp();
 }
 
 void loop()
 {
-  ws2812_effects_sost_wifi(WiFi.status());
-  loop_ws2812();
-  udp_synch();
   loop_server();
+  //loop_ws2812();
   loop_nixie_lamp();
-  
 }

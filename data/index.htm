@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Korm TCP Server</title>
+
+    <style>
+      @font-face {
+        font-family: "Montserrat";
+        src: local("Montserrat"), url(/fonts/Montserrat.ttf);
+      }
+    </style>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+
+    <script type="text/javascript" src="js/json_load.js"></script>
+  </head>
+
+  <body onload="onBodyLoad()">
+    <div class="container unselectable">
+      <h2 class="title unselectable" onclick="home_click()">Korm TCP Server</h2>
+
+      <div class="result_label">
+        <label class="text_setting unselectable" id="label_mode_wifi"
+          >MODE</label
+        >
+      </div>
+
+      <div class="result_label" style="font-size: medium">
+        <label class="text_setting unselectable" id="label_ip_addr"
+          >IP ADDR</label
+        >
+      </div>
+
+      <div class="result_label" style="font-size: medium">
+        <label class="text_setting unselectable" id="label_rssi_wifi"
+          >WiFi RSSI</label
+        >
+      </div>
+
+      <div class="settings">
+        <div style="margin-bottom: 5%"></div>
+        <button class="accordion">Network Settings</button>
+        <div class="panel">
+          <div class="settings">
+            <span class="settings__title setting-title">Режим Wi-Fi</span>
+          </div>
+
+          <div class="unselectable">
+            <input
+              id="radio_sta"
+              name="radio"
+              type="radio"
+              value="WIFI_STA"
+              onchange="handleChange(this); "
+            />
+
+            <label for="radio_sta">STA </label>
+
+            <input
+              id="radio_ap"
+              name="radio"
+              type="radio"
+              value="WIFI_AP"
+              onchange="handleChange(this);"
+            />
+            <label for="radio_ap">AP</label>
+
+            <input
+              id="DHCP"
+              name="DHCP"
+              type="checkbox"
+              onchange="handleCheckBox(this);"
+            />
+            <label for="DHCP">DHCP</label>
+          </div>
+
+          <div id="settings_mode_ap"></div>
+
+          <div id="settings_mode_sta">
+            <div style="margin-bottom: 5%"></div>
+
+            <a
+              class="button_style"
+              onclick="wi_wi_scan_esp_click()"
+              id="wi_fi_scan"
+              href="#modal_scan_wifi"
+              >Сканировать Wi-Fi</a
+            >
+
+            <div style="margin-bottom: 5%"></div>
+
+            <div>
+              <div class="settings">
+                <span class="settings__title setting-title">Точка доступа</span>
+              </div>
+              <input
+                type="text"
+                class="textbox_style"
+                id="settings_wifi_ssid"
+                placeholder="SSID"
+              />
+            </div>
+
+            <div>
+              <div class="settings">
+                <span class="settings__title setting-title">Пароль</span>
+              </div>
+
+              <input
+                onclick="return show_hide_password(this)"
+                type="password"
+                class="textbox_style"
+                id="settings_wifi_pass"
+                placeholder="Password"
+              />
+            </div>
+
+            <div id="dhcp_mode">
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title">STATIC IP</span>
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_ip"
+                  placeholder=""
+                />
+              </div>
+
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title">STATIC MASK</span>
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_mask"
+                  placeholder=""
+                />
+              </div>
+
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title"
+                    >STATIC GATAWAY</span
+                  >
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_gataway"
+                  placeholder=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="accordion">Serial Port</button>
+        <div class="panel">
+          <div class="settings">
+            <span class="settings__title setting-title"
+              >Конфигурация серийного порта</span
+            >
+          </div>
+          <select class="select-css" id="settings_mode_serial">
+            <option value="SERIAL_5N1">SERIAL_5N1</option>
+            <option value="SERIAL_6N1">SERIAL_6N1</option>
+            <option value="SERIAL_7N1">SERIAL_7N1</option>
+            <option value="SERIAL_8N1">SERIAL_8N1</option>
+            <option value="SERIAL_5N2">SERIAL_5N2</option>
+            <option value="SERIAL_6N2">SERIAL_6N2</option>
+            <option value="SERIAL_7N2">SERIAL_7N2</option>
+            <option value="SERIAL_8N2">SERIAL_8N2</option>
+            <option value="SERIAL_5E1">SERIAL_5E1</option>
+            <option value="SERIAL_6E1">SERIAL_6E1</option>
+            <option value="SERIAL_7E1">SERIAL_7E1</option>
+            <option value="SERIAL_8E1">SERIAL_8E1</option>
+            <option value="SERIAL_5E2">SERIAL_5E2</option>
+            <option value="SERIAL_6E2">SERIAL_6E2</option>
+            <option value="SERIAL_7E2">SERIAL_7E2</option>
+            <option value="SERIAL_8E2">SERIAL_8E2</option>
+            <option value="SERIAL_5O1">SERIAL_5O1</option>
+            <option value="SERIAL_6O1">SERIAL_6O1</option>
+            <option value="SERIAL_7O1">SERIAL_7O1</option>
+            <option value="SERIAL_8O1">SERIAL_8O1</option>
+            <option value="SERIAL_5O2">SERIAL_5O2</option>
+            <option value="SERIAL_6O2">SERIAL_6O2</option>
+            <option value="SERIAL_7O2">SERIAL_7O2</option>
+            <option value="SERIAL_8O2">SERIAL_8O2</option>
+          </select>
+
+          <div class="settings">
+            <span class="settings__title setting-title">Скорость</span>
+          </div>
+
+          <select class="select-css" id="settings_serial_baund">
+            <option value="600">600</option>
+            <option value="1200">1200</option>
+            <option value="2400">2400</option>
+            <option value="4800">4800</option>
+            <option value="9600">9600</option>
+            <option value="14400">14400</option>
+            <option value="19200">19200</option>
+            <option value="38400">38400</option>
+            <option value="56000">56000</option>
+            <option value="57600">57600</option>
+            <option value="115200">115200</option>
+          </select>
+        </div>
+
+        <button class="accordion">TCP Settins</button>
+        <div class="panel">
+          <div class="settings">
+            <div>
+              <div class="settings">
+                <span class="settings__title setting-title">Порт TCP</span>
+              </div>
+              <input
+                type="text"
+                class="textbox_style"
+                id="settings_port_tcp"
+                placeholder=""
+              />
+            </div>
+          </div>
+        </div>
+
+        <button class="accordion">Info</button>
+
+        <div class="panel">
+          <div class="settings unselectable">
+            <label class="text_setting" id="ui_mode_wifi">MODE WIFI</label>
+            <label class="text_setting" id="ui_ip_addr">IP ADDR</label>
+            <label class="text_setting" id="ui_mode_serial">MODE SERIAL</label>
+            <label class="text_setting" id="ui_serial_baund">SERIAL BND</label>
+            <label class="text_setting" id="ui_client_tcp">Client TCP</label>
+            <label class="text_setting" id="ui_wifi_rssi">WiFi RSSI</label>
+            <label class="text_setting" id="ui_mask_addr">MASK ADDR</label>
+            <label class="text_setting" id="ui_gataway_addr"
+              >GATAWAY ADDR</label
+            >
+            <label class="text_setting" id="ui_free_ram">FREE RAM</label>
+            <label class="text_setting" id="ui_wifi_ssid">WiFi SSID</label>
+            <label class="text_setting" id="ui_wifi_pass">WiFi PASS</label>
+            <label class="text_setting" id="ui_wifi_ap_ssid"
+              >WiFi SSID AP</label
+            >
+            <label class="text_setting" id="ui_wifi_ap_pass"
+              >WiFi PASS AP</label
+            >
+            <label class="text_setting" id="ui_port_tcp">PORT TCP</label>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="#modal_save"
+        class="button_style"
+        onclick="modal_text_read()"
+        id="button_save_config"
+        >Сохранить</a
+      >
+
+      <a
+        class="button_style"
+        href="#modal_reset_config"
+        id="button_default_reset"
+        >Сброс конфигурации</a
+      >
+
+      <div style="margin-bottom: 10%"></div>
+
+      <div class="title_podval unselectable">Korm TCP Server by M.Semerkov</div>
+
+      <!--                                 МОДАЛЬНЫЕ ОКНА                                          -->
+
+      <div class="modal" id="modal_save" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Сохранить текущие данные?</div>
+
+          <div class="modal-body">Потребуется перезагрузка!</div>
+
+          <a
+            class="btn-modal-yes"
+            aria-hidden="true"
+            onclick="all_save_config()"
+            href="#modal_reboot"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+
+      <div class="modal" id="modal_reboot" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Перезагрузка</div>
+          <div class="modal-body">Перезагрузить контроллер сейчас?</div>
+
+          <a
+            href="#close"
+            class="btn-modal-yes"
+            onclick="reboot_esp()"
+            href="#modal_reboot"
+            aria-hidden="true"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+
+      <div class="modal" id="modal_reset_config" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Сброс данных</div>
+          <div class="modal-body">Применить дефолтные настройки?</div>
+
+          <a
+            class="btn-modal-yes"
+            onclick="button_default_reset()"
+            href="#modal_reboot"
+            aria-hidden="true"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="js/accordion.js"></script>
+    <script type="text/javascript" src="js/elements_controll.js"></script>
+  </body>
+</html>
