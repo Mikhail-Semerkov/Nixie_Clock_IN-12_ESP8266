@@ -1,6 +1,7 @@
 void setup_ws2812()
 {
     ws2812fx.init();
+    ws2812fx.setBrightness(0);
     ws2812fx.start();
     Timer_Load_Sost_wifi.setInterval(1000);
 }
@@ -41,33 +42,41 @@ void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t s
 void ws2812_effects_sost_wifi(wl_status_t event)
 {
 
-    if (Seconds_Start_MK <= 10)
+    switch (event)
     {
-
-        switch (event)
+    case WL_CONNECTED:
+        if (Seconds_Start_MK <= 10)
         {
-        case WL_CONNECTED:
             select_effects(15, 0xFF0000, 20, 1000);
-            break;
-        case WL_DISCONNECTED:
-            select_effects(15, 0x00FF00, 20, 1000);
-            break;
-        case WL_NO_SSID_AVAIL:
-            select_effects(1, 0x00FF00, 20, 300);
-            break;
-        case WL_WRONG_PASSWORD:
-            select_effects(1, 0x00FF00, 20, 300);
-            break;
-
-        default:
-            break;
         }
-    }
-    else
-    {
+        else
+        {
+            select_effects(15, 0x00FFFF, 20, 3000);
+        }
 
-        select_effects(15, 0x00FFFF, 20, 3000);
+        break;
+    case WL_DISCONNECTED:
+
+        if (Seconds_Start_MK <= 10)
+        {
+            select_effects(15, 0x00FF00, 20, 1000);
+        }
+        else
+        {
+            select_effects(15, 0x00FFFF, 20, 3000);
+        }
+        break;
+    case WL_NO_SSID_AVAIL:
+        select_effects(1, 0x00FF00, 20, 300);
+        break;
+    case WL_WRONG_PASSWORD:
+        select_effects(1, 0x00FF00, 20, 300);
+        break;
+
+    default:
+        break;
     }
+
 }
 
 void loop_ws2812()

@@ -34,8 +34,10 @@ GTimer TimerSecond(MS);
 GTimer TimerEffects(MS);
 
 int Brightness_Lamp = 20;
-int Brighness_SK = 3300;
+int Brighness_SK = 7000;
 int Count_Dots;
+int effects_load = 2;
+void read_effects_load();
 
 int Perebor;
 
@@ -44,6 +46,7 @@ unsigned long Time_Anti_Otravlenie;
 unsigned long Count_Time_Anti_Otravlenie;
 
 void Nixie_Time(String Time, int Brightness);
+uint8_t MODE_NIXIE;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +76,7 @@ MicroDS3231 RTC_Clock;
 
 String Lamp_Time_Current;
 
-String Time_str;
+String Time_str, Data_str;
 
 GTimer Timer_Load_Sost_wifi(MS);
 
@@ -85,10 +88,8 @@ GTimer Timer_Load_Sost_wifi(MS);
 
 #include <WS2812FX.h>
 int Seconds_Start_MK;
-bool Read_Sost;
 
 #define LED_COUNT 3
 #define LED_PIN 12
-
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_RGB);
