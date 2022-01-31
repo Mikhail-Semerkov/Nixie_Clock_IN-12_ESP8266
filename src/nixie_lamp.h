@@ -1,17 +1,12 @@
 void Nixie_Time(String Time, int Brightness)
 {
-
     Time.replace(":", "");
-    int Count_Lamp_1 = String(Time.substring(0, 1)).toInt();
-    int Count_Lamp_2 = String(Time.substring(1, 2)).toInt();
-    int Count_Lamp_3 = String(Time.substring(2, 3)).toInt();
-    int Count_Lamp_4 = String(Time.substring(3, 4)).toInt();
-    int Count_Lamp_5 = String(Time.substring(4, 5)).toInt();
-    int Count_Lamp_6 = String(Time.substring(5, 6)).toInt();
+    char char_buf[] = {};
+    Time.toCharArray(char_buf, Time.length() + 1);
+    Serial.println(String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]));
 
     if (Timer_Brightness_Lamp.isReady())
     {
-
         for (int i = 0; i < 5; i++)
         {
 
@@ -36,38 +31,70 @@ void Nixie_Time(String Time, int Brightness)
 
             if (i == 1)
             {
-
-                sr.set(Key_Lamp[i], HIGH);
-                for (int j = 0; j < Brightness; j++)
+                if (String(char_buf[0]) != " ")
                 {
-                    sr.set(Count_Lamp_1, HIGH);
+                    sr.set(Key_Lamp[i], HIGH);
+                    for (int j = 0; j < Brightness; j++)
+                    {
+
+                        sr.set(String(char_buf[0]).toInt(), HIGH);
+                    }
+                }
+                else
+                {
+                    sr.set(Key_Lamp[i], LOW);
                 }
             }
 
             if (i == 2)
             {
-                sr.set(Key_Lamp[i], HIGH);
-                for (int j = 0; j < Brightness; j++)
+
+                if (String(char_buf[1]) != " ")
                 {
-                    sr.set(Count_Lamp_2, HIGH);
+                    sr.set(Key_Lamp[i], HIGH);
+                    for (int j = 0; j < Brightness; j++)
+                    {
+
+                        sr.set(String(char_buf[1]).toInt(), HIGH);
+                    }
+                }
+                else
+                {
+                    sr.set(Key_Lamp[i], LOW);
                 }
             }
 
             if (i == 3)
             {
-                sr.set(Key_Lamp[i], HIGH);
-                for (int j = 0; j < Brightness; j++)
+                if (String(char_buf[2]) != " ")
                 {
-                    sr.set(Count_Lamp_3, HIGH);
+                    sr.set(Key_Lamp[i], HIGH);
+                    for (int j = 0; j < Brightness; j++)
+                    {
+
+                        sr.set(String(char_buf[2]).toInt(), HIGH);
+                    }
+                }
+                else
+                {
+                    sr.set(Key_Lamp[i], LOW);
                 }
             }
 
             if (i == 4)
             {
-                sr.set(Key_Lamp[i], HIGH);
-                for (int j = 0; j < Brightness; j++)
+                if (String(char_buf[3]) != " ")
                 {
-                    sr.set(Count_Lamp_4, HIGH);
+                    sr.set(Key_Lamp[i], HIGH);
+                    for (int j = 0; j < Brightness; j++)
+                    {
+
+                        sr.set(String(char_buf[3]).toInt(), HIGH);
+                    }
+                }
+                else
+                {
+                    sr.set(Key_Lamp[i], LOW);
                 }
             }
 
@@ -95,14 +122,177 @@ void nixie_write()
         }
     }
 
-    if (Time_str != NULL)
+    int effects_load = 2;
+
+    if (Time_str != NULL && Time_str != "00:00:00")
     {
-        if (TimerEffects.isReady() && Brightness_Lamp != count_effects)
+        if (effects_load == 1)
         {
-            count_effects++;
+            if (TimerEffects.isReady() && Brightness_Lamp != count_effects)
+            {
+                count_effects++;
+            }
+
+            Nixie_Time(Time_str, count_effects);
         }
 
-        Nixie_Time(Time_str, count_effects);
+        if (effects_load == 2)
+        {
+
+            Time_str.replace(":", "");
+            char char_buf[] = {};
+            Time_str.toCharArray(char_buf, Time_str.length() + 1);
+            String Time_effects;
+
+            if (TimerEffects.isReady())
+            {
+                count_effects++;
+            }
+
+            if (count_effects == 1)
+            {
+                String i = "   " + String(char_buf[0]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 2)
+            {
+                String i = "  " + String(char_buf[0]) + " ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 3)
+            {
+                String i = " " + String(char_buf[0]) + "  ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 4)
+            {
+                String i = String(char_buf[0]) + "   ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            //////////////////////////////////////////////////////////////////////////
+
+            if (count_effects == 5)
+            {
+                String i = String(char_buf[0]) + "  " + String(char_buf[1]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 6)
+            {
+                String i = String(char_buf[0]) + " " + String(char_buf[1]) + " ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 7)
+            {
+                String i = String(char_buf[0]) + String(char_buf[1]) + "  ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            ///////////////////////////////////////////////////////////////////
+
+            if (count_effects == 8)
+            {
+                String i = String(char_buf[0]) + String(char_buf[1]) + " " + String(char_buf[2]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 9)
+            {
+                String i = String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + " ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            ///////////////////////////////////////////////////////////////////
+
+            if (count_effects >= 10)
+            {
+                Nixie_Time(Time_str, Brightness_Lamp);
+            }
+        }
+
+        if (effects_load == 3)
+        {
+
+            Time_str.replace(":", "");
+            char char_buf[] = {};
+            Time_str.toCharArray(char_buf, Time_str.length() + 1);
+            String Time_effects;
+
+            if (TimerEffects.isReady())
+            {
+                count_effects++;
+            }
+
+            if (count_effects == 1)
+            {
+                String i = String(char_buf[3] + "   ");
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 2)
+            {
+                String i = " " + String(char_buf[3]) + "  ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 3)
+            {
+                String i = "  " + String(char_buf[3]) + " ";
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            else if (count_effects == 4)
+            {
+                String i = "   " + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            //////////////////////////////////////////////////////////////////////////
+
+            if (count_effects == 5)
+            {
+                String i = String(char_buf[2]) + "  " + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 6)
+            {
+                String i = " " + String(char_buf[2]) + " " + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 7)
+            {
+                String i = "  " + String(char_buf[2]) + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            ///////////////////////////////////////////////////////////////////
+
+            if (count_effects == 8)
+            {
+                String i = String(char_buf[1]) + " " + String(char_buf[2]) + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            if (count_effects == 9)
+            {
+                String i = " " + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]);
+                Nixie_Time(i, Brightness_Lamp);
+            }
+
+            ///////////////////////////////////////////////////////////////////
+
+            if (count_effects >= 10)
+            {
+                Nixie_Time(Time_str, Brightness_Lamp);
+            }
+        }
     }
 }
 
