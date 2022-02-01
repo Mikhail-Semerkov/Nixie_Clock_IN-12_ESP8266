@@ -1,185 +1,133 @@
-void effects_load_1()
+
+
+void attenuation_start(String value, int brightnes, bool dots)
 {
 
-    if (effects_load == 1 && Time_str != NULL)
+    if (!dots)
     {
-        if (TimerEffects.isReady() && Brightness_Lamp != count_effects)
-        {
-            count_effects++;
-        }
+        Dots_Enabled = false;
+    }
 
-        Nixie_Time(Time_str, count_effects);
+    if (brightnes != count_attenuation_start)
+    {
+        count_attenuation_start++;
+    }
+    else
+    {
+        flag_attenuation_start = true;
+    }
+
+    Nixie_Time(value, count_attenuation_start, Dots_Enabled);
+}
+
+void attenuation_end(String value, int brightnes, bool dots)
+{
+
+    if (!dots)
+    {
+        Dots_Enabled = false;
+    }
+
+    if (count_animation_end != 0)
+    {
+        count_animation_end--;
+    }
+    else
+    {
+        flag_attenuation_end = true;
+    }
+
+    Nixie_Time(value, count_animation_end, Dots_Enabled);
+}
+
+void timer_effects()
+{
+    if (TimerEffects.isReady())
+    {
+
+        count_animation_start++;
+
+        Serial.println(count_animation_start);
     }
 }
 
-
-void animation_start()
+void animation_start(String value, int brightnes, bool dots)
 {
-
-
-}
-
-void effects_load_2()
-{
-
-    if (effects_load == 2 && Time_str != NULL)
+    if (Time_str != NULL && flag_animation_start != true)
     {
-        Time_str.replace(":", "");
+
+        if (!dots)
+        {
+            Dots_Enabled = false;
+        }
+
         char char_buf[] = {};
-        Time_str.toCharArray(char_buf, Time_str.length() + 1);
-        String Time_effects;
+        char blank = ' ';
+        value.replace(":", "");
+        value.replace(".", "");
+        value.toCharArray(char_buf, value.length() + 1);
+        String str_anim[] =
+            {
+                String(blank) + String(blank) + String(blank) + String(blank),                   // 1
+                String(blank) + String(blank) + String(blank) + String(char_buf[0]),             // 2
+                String(blank) + String(blank) + String(char_buf[0]) + String(blank),             // 3
+                String(blank) + String(char_buf[0]) + String(blank) + String(blank),             // 4
+                String(char_buf[0]) + String(blank) + String(blank) + String(blank),             // 5
+                String(char_buf[0]) + String(blank) + String(blank) + String(char_buf[1]),       // 6
+                String(char_buf[0]) + String(blank) + String(char_buf[1]) + String(blank),       // 7
+                String(char_buf[0]) + String(char_buf[1]) + String(blank) + String(blank),       // 8
+                String(char_buf[0]) + String(char_buf[1]) + String(blank) + String(char_buf[2]), // 9
+                String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + String(blank)  // 10
 
-        if (TimerEffects.isReady())
+            };
+
+        Nixie_Time(str_anim[count_animation_start], Brightness_Lamp, Dots_Enabled);
+
+        if (count_animation_start >= 10)
         {
-            count_effects++;
-        }
-
-        if (count_effects == 1)
-        {
-            String i = "   " + String(char_buf[0]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        else if (count_effects == 2)
-        {
-            String i = "  " + String(char_buf[0]) + " ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        else if (count_effects == 3)
-        {
-            String i = " " + String(char_buf[0]) + "  ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        else if (count_effects == 4)
-        {
-            String i = String(char_buf[0]) + "   ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        //////////////////////////////////////////////////////////////////////////
-
-        if (count_effects == 5)
-        {
-            String i = String(char_buf[0]) + "  " + String(char_buf[1]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 6)
-        {
-            String i = String(char_buf[0]) + " " + String(char_buf[1]) + " ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 7)
-        {
-            String i = String(char_buf[0]) + String(char_buf[1]) + "  ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        ///////////////////////////////////////////////////////////////////
-
-        if (count_effects == 8)
-        {
-            String i = String(char_buf[0]) + String(char_buf[1]) + " " + String(char_buf[2]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 9)
-        {
-            String i = String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + " ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        ///////////////////////////////////////////////////////////////////
-
-        if (count_effects >= 10 && count_effects <= 140)
-        {
-
-            Nixie_Time(Time_str, Brightness_Lamp);
-        }
-
-        if (count_effects == 141)
-        {
-            String i = " " + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 142)
-        {
-            String i = String(char_buf[1]) + " " + String(char_buf[2]) + String(char_buf[3]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 143)
-        {
-            String i = " " + String(char_buf[2]) + " " + String(char_buf[3]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 144)
-        {
-            String i = String(char_buf[2]) + " " + " " + String(char_buf[3]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 145)
-        {
-            String i = "   " + String(char_buf[3]);
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 146)
-        {
-            String i = "  " + String(char_buf[3]) + " ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 147)
-        {
-            String i = " " + String(char_buf[3]) + "  ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 148)
-        {
-            String i = String(char_buf[3]) + "   ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        if (count_effects == 149)
-        {
-            String i = "    ";
-            Nixie_Time(i, Brightness_Lamp);
-        }
-
-        else if (count_effects >= 150 && count_effects <= 200)
-        {
-            Count_Dots = 1;
-            Nixie_Time(Data_str, Brightness_Lamp);
-        }
-        else if (count_effects > 200)
-        {
-            // MODE_NIXIE == 10;
-            count_effects = 0;
+            flag_animation_start = true;
+            Dots_Enabled = true;
         }
     }
 }
 
-void read_effects_load()
+void animation_end(String value, int brightnes, bool dots)
 {
-
-    switch (effects_load)
+    if (Time_str != NULL && flag_animation_end != true)
     {
-    case 1:
-        effects_load_1();
-        break;
-    case 2:
-        effects_load_2();
-        break;
 
-    default:
-        break;
+        if (!dots)
+        {
+            Dots_Enabled = false;
+        }
+
+        char char_buf[] = {};
+        char blank = ' ';
+        value.replace(":", "");
+        value.replace(".", "");
+        value.toCharArray(char_buf, value.length() + 1);
+        String str_anim[] =
+            {
+                String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]), // 0
+                String(blank) + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]),       // 1
+                String(char_buf[1]) + String(blank) + String(char_buf[2]) + String(char_buf[3]),       // 2
+                String(blank) + String(blank) + String(char_buf[2]) + String(char_buf[3]),             // 3
+                String(blank) + String(char_buf[2]) + String(blank) + String(char_buf[3]),             // 4
+                String(char_buf[2]) + String(blank) + String(blank) + String(char_buf[3]),             // 5
+                String(blank) + String(blank) + String(blank) + String(char_buf[3]),                   // 6
+                String(blank) + String(blank) + String(char_buf[3]) + String(blank),                   // 7
+                String(blank) + String(char_buf[3]) + String(blank) + String(blank),                   // 8
+                String(char_buf[3]) + String(blank) + String(blank) + String(blank),                   // 9
+                String(blank) + String(blank) + String(blank) + String(blank)};                        // 10
+
+        Nixie_Time(str_anim[count_animation_start], Brightness_Lamp, Dots_Enabled);
+
+        if (count_animation_start >= 10)
+        {
+            flag_animation_end = true;
+            flag_animation_start = false;
+            flag_time = false;
+            count_animation_start = 0;
+        }
     }
 }

@@ -11,7 +11,7 @@ void wifi_connect()
     //     WiFi.setAutoReconnect(true);
     // }
 
-    WiFi.begin("Padavan 2.4", "46684668");
+    WiFi.begin("IT BRN 2g", "123456780");
 }
 
 void setup_wifi_esp()

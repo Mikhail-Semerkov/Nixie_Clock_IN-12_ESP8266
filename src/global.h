@@ -36,8 +36,8 @@ GTimer TimerEffects(MS);
 int Brightness_Lamp = 20;
 int Brighness_SK = 7000;
 int Count_Dots;
+bool Dots_Enabled = true;
 int effects_load = 2;
-void read_effects_load();
 
 int Perebor;
 
@@ -45,8 +45,15 @@ bool Antiotravlenie_Lamp;
 unsigned long Time_Anti_Otravlenie;
 unsigned long Count_Time_Anti_Otravlenie;
 
-void Nixie_Time(String Time, int Brightness);
-uint8_t MODE_NIXIE;
+int count_animation_start, count_animation_end, count_attenuation_start, count_attenuation_end;
+bool flag_animation_start, flag_animation_end, flag_attenuation_start, flag_attenuation_end, flag_time, flag_date;
+
+void animation_start(String value, int brightnes, bool dots);
+void animation_end(String value, int brightnes, bool dots);
+void timer_effects();
+
+int count_effects;
+int mode_clock;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,8 +65,6 @@ ESP8266WebServer server(80);
 
 ESP8266HTTPUpdateServer httpUpdater;
 ///////////////////////////////////////
-
-int count_effects;
 
 // Time UDP
 WiFiUDP ntpUDP;

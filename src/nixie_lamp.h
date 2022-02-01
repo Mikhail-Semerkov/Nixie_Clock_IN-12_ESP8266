@@ -1,13 +1,15 @@
-void Nixie_Time(String Time, int Brightness)
+void Nixie_Time(String Time, int Brightness, bool Dots)
 {
+    Dots_Enabled = Dots;
+    char char_buf[] = {};
     Time.replace(":", "");
     Time.replace(".", "");
-    char char_buf[] = {};
     Time.toCharArray(char_buf, Time.length() + 1);
-    Serial.println(String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]));
+    String Full = String(char_buf[0]) + String(char_buf[1]) + String(char_buf[2]) + String(char_buf[3]);
 
     if (Timer_Brightness_Lamp.isReady())
     {
+
         for (int i = 0; i < 5; i++)
         {
 
@@ -17,15 +19,18 @@ void Nixie_Time(String Time, int Brightness)
                 {
                     for (int j = 0; j < Brightness; j++)
                     {
-                        sr.set(Key_Lamp[i], HIGH);
+                        sr.set(Key_Lamp[i], LOW);
                     }
                 }
 
                 else
                 {
-                    for (int j = 0; j < Brightness; j++)
+                    if (Dots_Enabled == true)
                     {
-                        sr.set(Key_Lamp[i], LOW);
+                        for (int j = 0; j < Brightness; j++)
+                        {
+                            sr.set(Key_Lamp[i], HIGH);
+                        }
                     }
                 }
             }
@@ -101,7 +106,6 @@ void Nixie_Time(String Time, int Brightness)
 
             Time = "";
             sr.setAllLow();
-            
         }
     }
 }
@@ -127,6 +131,7 @@ void nixie_write_time()
 
 void setup_nixie_lamp()
 {
+    mode_clock = 0;
     Timer_Brightness_Lamp.setInterval(Brighness_SK);
     TimerSecond.setInterval(1000);
     TimerEffects.setInterval(100);
@@ -134,6 +139,58 @@ void setup_nixie_lamp()
 
 void loop_nixie_lamp()
 {
-    read_effects_load();
     nixie_write_time();
+
+    if (Time_str != NULL)
+    {
+        timer_effects();
+    }
+
+    if (mode_clock == 0)
+    {
+        animation_start(Time_str, Brightness_Lamp, false);
+    }
+    else if (mode_clock == 1)
+    {
+        animation_start(Data_str, Brightness_Lamp, false);
+    }
+
+    if (flag_animation_start && !flag_time)
+    {
+        if (mode_clock == 0)
+        {
+            Nixie_Time(Time_str, Brightness_Lamp, true);
+            if (count_animation_start > 200)
+            {
+                flag_time = true;
+                flag_animation_end = false;
+                count_animation_start = 0;
+                mode_clock = 1;
+            }
+        }
+
+        if (mode_clock == 1)
+        {
+            Nixie_Time(Data_str, Brightness_Lamp, false);
+            if (count_animation_start > 50)
+            {
+                flag_time = true;
+                flag_animation_end = false;
+                count_animation_start = 0;
+                mode_clock = 0;
+            }
+        }
+    }
+
+    if (flag_time)
+    {
+        if (mode_clock == 1)
+        {
+            animation_end(Time_str, Brightness_Lamp, false);
+        }
+        if (mode_clock == 0)
+        {
+            animation_end(Data_str, Brightness_Lamp, false);
+        }
+    }
 }

@@ -16,10 +16,10 @@ void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t s
         ws2812fx.setBrightness(brightness);
         ws2812fx.setSpeed(speed);
 
-        Serial.println(String(ws2812fx.getMode()));
-        Serial.println(String(ws2812fx.getColor()));
-        Serial.println(String(ws2812fx.getBrightness()));
-        Serial.println(String(ws2812fx.getSpeed()));
+        // Serial.println(String(ws2812fx.getMode()));
+        // Serial.println(String(ws2812fx.getColor()));
+        // Serial.println(String(ws2812fx.getBrightness()));
+        // Serial.println(String(ws2812fx.getSpeed()));
 
         break;
     }
@@ -76,7 +76,6 @@ void ws2812_effects_sost_wifi(wl_status_t event)
     default:
         break;
     }
-
 }
 
 void loop_ws2812()

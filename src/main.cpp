@@ -7,15 +7,17 @@
 
 void setup()
 {
-  //setup_wifi_esp();
+  Serial.begin(115200);
+  setup_wifi_esp();
   setup_ws2812();
-  //setup_server();
+  setup_server();
   setup_nixie_lamp();
 }
 
 void loop()
 {
-  //loop_server();
-  loop_ws2812();
+
   loop_nixie_lamp();
+  loop_server();
+  loop_ws2812();
 }
