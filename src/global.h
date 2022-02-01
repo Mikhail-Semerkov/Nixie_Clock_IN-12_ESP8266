@@ -61,6 +61,10 @@ int mode_clock;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+String SSID = "Padavan 2.4";
+String PASS = "46684668";
+String HostName = "Clock_IN_12";
+
 ESP8266WebServer server(80);
 
 ESP8266HTTPUpdateServer httpUpdater;
@@ -94,7 +98,7 @@ GTimer Timer_Load_Sost_wifi(MS);
 #include <WS2812FX.h>
 int Seconds_Start_MK;
 
-#define LED_COUNT 3
+#define LED_COUNT 16
 #define LED_PIN 12
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_RGB);

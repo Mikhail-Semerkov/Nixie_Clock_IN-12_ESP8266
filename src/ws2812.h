@@ -51,7 +51,7 @@ void ws2812_effects_sost_wifi(wl_status_t event)
         }
         else
         {
-            select_effects(15, 0x00FFFF, 20, 3000);
+            select_effects(15, 0x00FFFF, 20, 5000);
         }
 
         break;
@@ -63,7 +63,7 @@ void ws2812_effects_sost_wifi(wl_status_t event)
         }
         else
         {
-            select_effects(15, 0x00FFFF, 20, 3000);
+            select_effects(15, 0x00FFFF, 20, 5000);
         }
         break;
     case WL_NO_SSID_AVAIL:
