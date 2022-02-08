@@ -3,8 +3,9 @@
   font-family: "Montserrat";
   font-weight: 400;
   font-style: normal;
-  src: local("Montserrat"), url(/fonts/Montserrat.woff2.gz) format("woff2"),
-    local("Montserrat"), url(/fonts/Montserrat.woff.gz) format("woff");
+  src: local("Montserrat"), url(/fonts/Montserrat.woff2) format("woff2"),
+    local("Montserrat"), url(/fonts/Montserrat.woff) format("woff"),
+    local("Montserrat"), url(/fonts/Montserrat.ttf) format("ttf");
 }
 
 .unselectable {
@@ -61,7 +62,6 @@ body {
   padding: 6px;
   border: 3px;
   text-align: center;
-  font-size: 20px;
   font: bold;
   right: 5px;
   top: 10px;
@@ -124,6 +124,34 @@ body {
   color: Red;
 }
 
+.container_digistar {
+  position: relative;
+  font-family: "Montserrat";
+  text-transform: uppercase;
+  text-align: center;
+
+  width: 700px;
+  height: auto;
+  padding: 10px 25px;
+  background: #0a0e31;
+  border-radius: 10px;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.45),
+    0 4px 8px rgba(99, 82, 82, 0.35), 0 8px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.35),
+    0 8px 12px rgba(0, 0, 0, 0.15);
+  margin: auto;
+}
+
+.container_digistar h2.title {
+  text-transform: uppercase;
+  display: block;
+  text-align: center;
+  font-size: 30px;
+  margin: 5px -5px;
+  margin-bottom: 15px;
+  color: Red;
+}
+
 .result_label {
   font-family: "Montserrat";
   text-transform: uppercase;
@@ -136,6 +164,27 @@ body {
   font-size: 20px;
   line-height: 20px;
   margin-bottom: 3%;
+}
+
+.result_weight {
+  white-space: pre;
+  text-size: 100px;
+  font-family: "Montserrat";
+  text-transform: uppercase;
+  width: auto;
+  height: auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 5%;
+}
+
+.text_weight {
+  font-family: "Montserrat";
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 60px;
 }
 
 .result_connect {
@@ -372,4 +421,39 @@ a.button_style:active {
   color: white;
   text-align: center;
   font-size: 14px;
+}
+
+.border_dublore {
+  color: white;
+  user-select: none;
+  padding: 0.5em 2em;
+  border: 2px solid;
+  border-radius: 4px;
+}
+
+.imgblock2 {
+  position: relative;
+  display: inline-block;
+  margin: auto;
+}
+
+.imgblock2 img {
+  height: auto;
+  width: auto;
+}
+
+.imgblock2 h2 {
+  left: 0;
+  position: absolute;
+  top: 110px;
+  width: 100%;
+  left: -11px;
+}
+.imgblock2 h2 span {
+  background: none repeat scroll 0 0 #222;
+  border-radius: 2px;
+  color: #fff;
+  font: 16px arial;
+  line-height: 29px;
+  padding: 3px 5px;
 }
