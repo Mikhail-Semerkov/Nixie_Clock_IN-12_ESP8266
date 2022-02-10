@@ -1,60 +1,26 @@
-var reloadPeriod = 1000;
 var running = false;
-var setting_load = false;
-
-var nixie_time_js;
-var nixie_time;
+var nixie_time,
+    ip_addr,
+    mode_wifi,
+    free_heap;
 
 function run_index() {
   if (!running)
   {
     running = true;
-    loadValues();
   }
 }
 
-function loadValues() {
+setInterval(function getData() {
   if (!running) return;
-  var xh = new XMLHttpRequest();
-  xh.onreadystatechange = function () {
-    if (xh.readyState == 4) {
-      if (xh.status == 200) {
-        var res = JSON.parse(xh.responseText);
-        nixie_time = res.nixie_time_js;
-      
-        if (running) setTimeout(loadValues, reloadPeriod);
-      }
-      else running = false;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var res = JSON.parse(xhttp.responseText);
+      display.setValue(res.nixie_time);
+      document.getElementById("free_heap").textContent = "Free Heap: " + res.free_heap;
     }
   };
-  xh.open("GET", "/json", true);
-  xh.send();
-}
-
-
-var display = new SegmentDisplay("display");
-  display.pattern         = "######";
-  display.displayAngle    = 0;
-  display.digitHeight     = 50;
-  display.digitWidth      = 28;
-  display.digitDistance   = 6.4;
-  display.segmentWidth    = 4.5;
-  display.segmentDistance = 1.1;
-  display.segmentCount    = 14;
-  display.cornerType      = 0;
-  display.colorOn = "#EFEFEF";
-  display.colorOff = "#232746";
-  display.draw();
-      
-      animate();
-
-      function animate() {
-        
-        display.setValue(nixie_time);
-        window.setTimeout("animate()", 100);
-      }
-
-
-
-  
-
+  xhttp.open("GET", "/json", true);
+  xhttp.send();
+}, 1000);

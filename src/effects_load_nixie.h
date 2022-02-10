@@ -47,7 +47,7 @@ void timer_effects()
 
         count_animation_start++;
 
-        Serial.println(count_animation_start);
+        //Serial.println(count_animation_start);
     }
 }
 

@@ -1,4 +1,6 @@
 #include <global.h>
+#include <function.h>
+#include <config.h>
 #include <wifi_esp.h>
 #include <nixie_lamp.h>
 #include <effects_load_nixie.h>
@@ -8,10 +10,14 @@
 void setup()
 {
   Serial.begin(115200);
+
+  loadConfiguration("/config.json", config);
   setup_wifi_esp();
   setup_ws2812();
   setup_server();
   setup_nixie_lamp();
+
+  Serial.println(config._static_ip);
 }
 
 void loop()

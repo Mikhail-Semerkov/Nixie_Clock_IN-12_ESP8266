@@ -3,22 +3,296 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Nixie Clock</title>
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-
-  <body>
-    <div class="container">
-      <h2 class="title">Nixie Clock</h2>
-      <div style="margin-bottom: 1%"></div>
-      <div class="border_dublore">
-        <canvas id="display" width="250" height="80"></canvas>
-      </div>
-      <div style="margin-bottom: 10%"></div>
-      <div class="title_podval unselectable">Nixie Clock by M.Semerkov</div>
-    </div>
     <script type="text/javascript" src="js/segment-display.js"></script>
     <script type="text/javascript" src="js/json_load.js"></script>
+    <title>NIXIE CLOCK</title>
+    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/element_color.css" />
+  </head>
+
+  <body onload="run_index()">
+    <div class="container unselectable">
+      <h2
+        class="title unselectable"
+        style="cursor: pointer"
+        onclick="home_click()"
+      >
+        NIXIE CLOCK
+      </h2>
+      <div style="margin-bottom: 1%"></div>
+
+      <canvas id="display" width="250" height="80"></canvas>
+
+      <div style="margin-bottom: 5%"></div>
+
+      <div class="result_label">
+        <label class="text_setting unselectable" id="label_mode_wifi"
+          >MODE</label
+        >
+      </div>
+
+      <div class="result_label" style="font-size: medium">
+        <label class="text_setting unselectable" id="label_ip_addr"
+          >IP ADDR</label
+        >
+      </div>
+
+      <div class="result_label" style="font-size: medium">
+        <label class="text_setting unselectable" id="label_rssi_wifi"
+          >WiFi RSSI</label
+        >
+      </div>
+
+      <div class="settings">
+        <div style="margin-bottom: 5%"></div>
+        <button class="accordion">Network</button>
+        <div class="panel">
+          <div class="border_dublore">
+            <div class="settings">
+              <span class="settings__title setting-title">Режим Wi-Fi</span>
+            </div>
+
+            <div class="unselectable">
+              <input
+                id="radio_sta"
+                name="radio"
+                type="radio"
+                value="WIFI_STA"
+                onchange="handleChange(this); "
+              />
+
+              <label for="radio_sta">STA </label>
+
+              <input
+                id="radio_ap"
+                name="radio"
+                type="radio"
+                value="WIFI_AP"
+                onchange="handleChange(this);"
+              />
+              <label for="radio_ap">AP</label>
+
+              <input
+                id="DHCP"
+                name="DHCP"
+                type="checkbox"
+                onchange="handleCheckBox(this);"
+              />
+              <label for="DHCP">DHCP</label>
+            </div>
+          </div>
+
+          <div id="settings_mode_ap"></div>
+
+          <div id="settings_mode_sta">
+            <div style="margin-bottom: 5%"></div>
+
+            <div style="margin-bottom: 5%"></div>
+
+            <div>
+              <div class="settings">
+                <span class="settings__title setting-title">Точка доступа</span>
+              </div>
+              <input
+                type="text"
+                class="textbox_style"
+                id="settings_wifi_ssid"
+                placeholder="SSID"
+              />
+            </div>
+
+            <div>
+              <div class="settings">
+                <span class="settings__title setting-title">Пароль</span>
+              </div>
+
+              <input
+                onclick="return show_hide_password(this)"
+                type="password"
+                class="textbox_style"
+                id="settings_wifi_pass"
+                placeholder="Password"
+              />
+            </div>
+
+            <div id="dhcp_mode">
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title">STATIC IP</span>
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_ip"
+                  placeholder=""
+                />
+              </div>
+
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title">STATIC MASK</span>
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_mask"
+                  placeholder=""
+                />
+              </div>
+
+              <div>
+                <div class="settings">
+                  <span class="settings__title setting-title"
+                    >STATIC GATAWAY</span
+                  >
+                </div>
+                <input
+                  type="text"
+                  class="textbox_style"
+                  id="settings_static_gataway"
+                  placeholder=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="accordion">CLOCK</button>
+        <div class="panel">
+
+         
+        </div>
+
+        <button class="accordion">WS2812</button>
+        <div class="panel">
+          <div class="settings unselectable">
+            <select class="select-css" id="select_color_ws2812">
+            <option value="RED">RED</option>
+            <option value="GREEN">GREEN</option>
+            <option value="BLUE">BLUE</option>
+            <option value="WHITE">WHITE</option>
+            <option value="BLACK">BLACK</option>
+            <option value="YELLOW">YELLOW</option>
+            <option value="CYAN">CYAN</option>
+            <option value="MAGENTA">MAGENTA</option>
+            <option value="PURPLE">PURPLE</option>
+            <option value="ORANGE">ORANGE</option>
+            <option value="PINK">PINK</option>
+            <option value="GRAY">GRAY</option>
+            <option value="ULTRAWHITE">ULTRAWHITE</option>
+
+            <input type="color" class="element_color" id="color_led_front">
+          </select>
+          </div>
+        </div>
+     
+
+        
+
+        <button class="accordion">Info</button>
+        <div class="panel">
+          <div class="settings unselectable">
+            <label class="text_setting" id="free_heap">Free Heap</label>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="#modal_save"
+        class="button_style"
+        onclick="modal_text_read()"
+        id="button_save_config"
+        >Сохранить</a
+      >
+
+      <a
+        class="button_style"
+        href="#modal_reset_config"
+        id="button_default_reset"
+        >Сброс конфигурации</a
+      >
+
+      <div style="margin-bottom: 10%"></div>
+
+      <div class="title_podval unselectable">Korm TCP Server by M.Semerkov</div>
+
+
+
+            <!--                                 МОДАЛЬНЫЕ ОКНА                                          -->
+
+      <div class="modal" id="modal_terminal_controll" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Покинуть страницу?</div>
+
+          <div class="modal-body">
+            Будет произведён переход на страницу управления терминала!
+          </div>
+          <a
+            class="btn-modal-yes"
+            aria-hidden="true"
+            onclick="terminal_controll_page()"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+
+      <div class="modal" id="modal_save" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Сохранить текущие данные?</div>
+
+          <div class="modal-body">Потребуется перезагрузка!</div>
+
+          <a
+            class="btn-modal-yes"
+            aria-hidden="true"
+            onclick="all_save_config()"
+            href="#modal_reboot"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+
+      <div class="modal" id="modal_reboot" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Перезагрузка</div>
+          <div class="modal-body">Перезагрузить контроллер сейчас?</div>
+
+          <a
+            href="#close"
+            class="btn-modal-yes"
+            onclick="reboot_esp()"
+            href="#modal_reboot"
+            aria-hidden="true"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+
+      <div class="modal" id="modal_reset_config" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-header">Сброс данных</div>
+          <div class="modal-body">Применить дефолтные настройки?</div>
+
+          <a
+            class="btn-modal-yes"
+            onclick="button_default_reset()"
+            href="#modal_reboot"
+            aria-hidden="true"
+            >Да</a
+          >
+          <a href="#close" class="btn-modal-no" aria-hidden="true">Нет</a>
+        </div>
+      </div>
+    </div>
+
+
+
+    </div>
+    <script type="text/javascript" src="js/accordion.js"></script>
+    <script type="text/javascript" src="js/elements_controll.js"></script>
   </body>
 </html>

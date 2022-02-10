@@ -103,37 +103,98 @@ void handleWebRequests()
 
 void handleRoot()
 {
-  server.sendHeader("Location", "/index.html", true);
+  server.sendHeader("Location", "/index.htm", true);
   server.send(302, "text/plane", "");
+}
+
+void set_color_ws2812()
+{
+  String Buffer = server.arg("color_ws2812");
+  server.send(200, "text/plane", "OK");
+
+  if (Buffer == "RED")
+  {
+    ws2812fx.setColor(RED);
+  }
+  if (Buffer == "GREEN")
+  {
+    ws2812fx.setColor(GREEN);
+  }
+  if (Buffer == "BLUE")
+  {
+    ws2812fx.setColor(BLUE);
+  }
+  if (Buffer == "WHITE")
+  {
+    ws2812fx.setColor(WHITE);
+  }
+  if (Buffer == "BLACK")
+  {
+    ws2812fx.setColor(BLACK);
+  }
+  if (Buffer == "YELLOW")
+  {
+    ws2812fx.setColor(YELLOW);
+  }
+  if (Buffer == "CYAN")
+  {
+    ws2812fx.setColor(CYAN);
+  }
+  if (Buffer == "MAGENTA")
+  {
+    ws2812fx.setColor(MAGENTA);
+  }
+  if (Buffer == "PURPLE")
+  {
+    ws2812fx.setColor(PURPLE);
+  }
+  if (Buffer == "ORANGE")
+  {
+    ws2812fx.setColor(ORANGE);
+  }
+  if (Buffer == "PINK")
+  {
+    ws2812fx.setColor(PINK);
+  }
+  if (Buffer == "GRAY")
+  {
+    ws2812fx.setColor(GRAY);
+  }
+  if (Buffer == "ULTRAWHITE")
+  {
+    ws2812fx.setColor(ULTRAWHITE);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup_server()
 {
-  SPIFFS.begin();
+
   server.on("/", handleRoot);
   server.onNotFound(handleWebRequests);
 
   httpUpdater.setup(&server, "/update");
+
   server.on("/json", HTTP_GET, []()
             {
                   String
                   json = "{\n";
-
                   json += "\"nixie_time\":" + String("\"") + Time_str + String("\", \n");
-                  json += "\"free_heap\":" + String("\"") + ESP.getFreeHeap() + String("\"");
-
+                  json += "\"mode_wifi\":" + String("\"") + config._mode_wifi + String("\", \n");
+                  json += "\"free_heap\":" + String("\"") + formatBytes(ESP.getFreeHeap()) + String("\"");
                   json += "\n}";
 
                   server.send(200, "text/json", json);
                   json = String(); });
+
+  server.on("/select_color_ws2812", set_color_ws2812);
 
   server.begin();
 }
 
 void loop_server()
 {
-  udp_synch();
+  //udp_synch();
   server.handleClient();
 }
