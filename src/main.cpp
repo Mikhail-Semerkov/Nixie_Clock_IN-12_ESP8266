@@ -10,14 +10,11 @@
 void setup()
 {
   Serial.begin(115200);
-
-  loadConfiguration("/config.json", config);
+  setup_config();
   setup_wifi_esp();
   setup_ws2812();
   setup_server();
   setup_nixie_lamp();
-
-  Serial.println(config._static_ip);
 }
 
 void loop()

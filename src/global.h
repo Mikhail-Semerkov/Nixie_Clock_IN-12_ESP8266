@@ -63,11 +63,14 @@ int mode_clock;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-String SSID = "indconf2002";
-String PASS = "07031968200703196820123456";
-// String SSID = "IT BRN 2g";
-// String PASS = "123456780";
-String HostName = "Clock_IN_12";
+// String SSID = "Padavan 2.4";
+// String PASS = "46684668";
+//  String SSID = "IT BRN 2g";
+//  String PASS = "123456780";
+// String HostName = "Clock_IN_12";
+bool DHCP;
+IPAddress local_IP, gateway, subnet, primaryDNS, secondaryDNS;
+IPAddress local_IP_AP(192, 168, 1, 1), gateway_AP(192, 168, 1, 254), subnet_AP(255, 255, 255, 0);
 
 ESP8266WebServer server(80);
 
@@ -110,7 +113,7 @@ WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB);
 
 struct Config
 {
-    String _mode_wifi, _ip_addr, _mask_addr, _gataway_addr, _wifi_ssid, _wifi_pass, _wifi_ssid_ap, _wifi_pass_ap, _port_tcp, _dhcp, _static_ip, _static_mask, _static_gataway;
+    String _mode_wifi, _ip_addr, _mask_addr, _gataway_addr, _wifi_ssid, _wifi_pass, _wifi_ssid_ap, _wifi_pass_ap, _dhcp, _static_ip, _static_mask, _static_gataway, _hostname;
 };
 
 Config config;

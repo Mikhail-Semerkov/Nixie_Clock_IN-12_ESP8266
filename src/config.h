@@ -1,5 +1,6 @@
 void loadConfiguration(const char *filename, Config &config)
 {
+
     while (!SPIFFS.begin())
     {
         Serial.println(F("Failed to initialize SD library"));
@@ -17,11 +18,11 @@ void loadConfiguration(const char *filename, Config &config)
     config._wifi_pass = root["wifi_pass"] | "";
     config._wifi_ssid_ap = root["wifi_ssid_ap"] | "Nixie Clock";
     config._wifi_pass_ap = root["wifi_pass_ap"] | "12345678";
-    config._port_tcp = root["port_tcp"] | "4001";
     config._dhcp = root["dhcp"] | "0";
     config._static_ip = root["static_ip"] | "192.168.1.1";
     config._static_mask = root["static_mask"] | "255.255.252.0";
     config._static_gataway = root["static_gataway"] | "192.168.1.1";
+    config._hostname = root["hostname"] | "Nixie_Clock";
 
     configFile.close();
 }
@@ -53,6 +54,7 @@ void saveConfiguration(const char *filename, const Config &config)
     root["static_ip"] = config._static_ip;
     root["static_mask"] = config._static_mask;
     root["static_gataway"] = config._static_gataway;
+    root["hostname"] = config._hostname;
 
     if (root.printTo(file) == 0)
     {
@@ -80,22 +82,17 @@ void printFile(const char *filename)
     file.close();
 }
 
-void btn_default()
+void func_default_settings()
 {
-    if (digitalRead(0))
-        return;
 
-    unsigned long t = millis();
+    Serial.println("Reset ESP32");
+    Serial.println("Read default config");
+    SPIFFS.remove("/config.json");
+    ESP.restart();
+}
 
-    while (!digitalRead(0))
-    {
-        delay(1);
-        if (t + 7500 < millis())
-        {
-            Serial.println("Reset ESP32");
-            Serial.println("Read default config");
-            SPIFFS.remove("/config.json");
-            ESP.restart();
-        }
-    }
+void setup_config()
+{
+
+    loadConfiguration("/config.json", config);
 }

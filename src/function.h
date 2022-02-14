@@ -18,7 +18,7 @@ String formatBytes(size_t bytes)
     }
 }
 
-extern String getValue(String data, char separator, int index)
+extern String HexToRGB(String data, char separator, int index)
 {
     int found = 0;
     int strIndex[] = {0, -1};
