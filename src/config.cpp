@@ -1,3 +1,7 @@
+#include "config.h"
+
+Config config;
+
 void loadConfiguration(const char *filename, Config &config)
 {
 
@@ -13,9 +17,9 @@ void loadConfiguration(const char *filename, Config &config)
     if (!root.success())
         Serial.println(F("Failed to read file, using default configuration"));
 
-    config._mode_wifi = root["mode_wifi"] | "WIFI_AP";
-    config._wifi_ssid = root["wifi_ssid"] | "";
-    config._wifi_pass = root["wifi_pass"] | "";
+    config._mode_wifi = root["mode_wifi"] | "WIFI_STA";
+    config._wifi_ssid = root["wifi_ssid"] | "Padavan 2.4";
+    config._wifi_pass = root["wifi_pass"] | "46684668";
     config._wifi_ssid_ap = root["wifi_ssid_ap"] | "Nixie Clock";
     config._wifi_pass_ap = root["wifi_pass_ap"] | "12345678";
     config._dhcp = root["dhcp"] | "0";

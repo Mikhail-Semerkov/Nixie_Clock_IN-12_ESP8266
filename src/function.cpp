@@ -1,3 +1,5 @@
+#include "function.h"
+
 String formatBytes(size_t bytes)
 {
     if (bytes < 1024)

@@ -1,4 +1,6 @@
+#include "ws2812.h"
 
+WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB);
 
 void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t speed)
 {
@@ -12,13 +14,16 @@ void select_effects(uint8_t mode, uint32_t color, uint8_t brightness, uint16_t s
     }
 }
 
+void set_collor(uint32_t color)
+{
+    ws2812fx.setColor(color);
+}
+
 void setup_ws2812()
 {
     ws2812fx.init();
     ws2812fx.setBrightness(0);
     ws2812fx.start();
-    Timer_Load_Sost_wifi.setInterval(1000);
-
     select_effects(15, 0xFF0000, 20, 3000);
 }
 

@@ -1,3 +1,9 @@
+#include "wifi_esp.h"
+
+bool DHCP;
+IPAddress local_IP, gateway, subnet, primaryDNS, secondaryDNS;
+IPAddress local_IP_AP(192, 168, 1, 1), gateway_AP(192, 168, 1, 254), subnet_AP(255, 255, 255, 0);
+
 void wifi_connect()
 {
 
@@ -70,7 +76,3 @@ void wifi_connect()
     }
 }
 
-void setup_wifi_esp()
-{
-    wifi_connect();
-}

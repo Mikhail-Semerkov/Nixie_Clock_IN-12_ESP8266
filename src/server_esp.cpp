@@ -1,44 +1,12 @@
-void udp_synch()
-{
-  if (WiFi.status() == WL_CONNECTED && Synch_UDP == false)
-  {
-    Serial.println("WiFi Connect!");
-    timeClient.begin();
-    timeClient.setTimeOffset(3600 * timeZone);
+#include "server_esp.h"
+#include "ws2812.h"
+#include "function.h"
+#include "nixie_lamp.h"
+#include "config.h"
 
-    if (!timeClient.update())
-    {
-      Serial.println("UDP Error!");
-      timeClient.forceUpdate();
-      UDP_Error = true;
-    }
-    else
-    {
-      UDP_Error = false;
-    }
+ESP8266WebServer server(80);
 
-    if (UDP_Error == false && UDP_Error == false)
-    {
-
-      formattedDate = timeClient.getFormattedDate();
-      int splitT = formattedDate.indexOf("T");
-      dayStamp = formattedDate.substring(0, splitT);
-      Serial.print("UDP DATE: ");
-      Serial.println(dayStamp);
-
-      timeStamp = formattedDate.substring(splitT + 1, formattedDate.length() - 1);
-      Serial.print("UDP TIME: ");
-      Serial.println(timeStamp);
-
-      RTC_Clock.setHMSDMY(timeClient.getHours(), timeClient.getMinutes(), timeClient.getSeconds(), dayStamp.substring(8, 10).toInt(), dayStamp.substring(5, 7).toInt(), dayStamp.substring(0, 4).toInt());
-
-      if (UDP_Error == false)
-      {
-        Synch_UDP = true;
-      }
-    }
-  }
-}
+ESP8266HTTPUpdateServer httpUpdater;
 
 const char *htmlfile = "/index.htm";
 
@@ -114,55 +82,55 @@ void set_color_ws2812()
 
   if (Buffer == "RED")
   {
-    ws2812fx.setColor(RED);
+    set_collor(RED);
   }
   if (Buffer == "GREEN")
   {
-    ws2812fx.setColor(GREEN);
+    set_collor(GREEN);
   }
   if (Buffer == "BLUE")
   {
-    ws2812fx.setColor(BLUE);
+    set_collor(BLUE);
   }
   if (Buffer == "WHITE")
   {
-    ws2812fx.setColor(WHITE);
+    set_collor(WHITE);
   }
   if (Buffer == "BLACK")
   {
-    ws2812fx.setColor(BLACK);
+    set_collor(BLACK);
   }
   if (Buffer == "YELLOW")
   {
-    ws2812fx.setColor(YELLOW);
+    set_collor(YELLOW);
   }
   if (Buffer == "CYAN")
   {
-    ws2812fx.setColor(CYAN);
+    set_collor(CYAN);
   }
   if (Buffer == "MAGENTA")
   {
-    ws2812fx.setColor(MAGENTA);
+    set_collor(MAGENTA);
   }
   if (Buffer == "PURPLE")
   {
-    ws2812fx.setColor(PURPLE);
+    set_collor(PURPLE);
   }
   if (Buffer == "ORANGE")
   {
-    ws2812fx.setColor(ORANGE);
+    set_collor(ORANGE);
   }
   if (Buffer == "PINK")
   {
-    ws2812fx.setColor(PINK);
+    set_collor(PINK);
   }
   if (Buffer == "GRAY")
   {
-    ws2812fx.setColor(GRAY);
+    set_collor(GRAY);
   }
   if (Buffer == "ULTRAWHITE")
   {
-    ws2812fx.setColor(ULTRAWHITE);
+    set_collor(ULTRAWHITE);
   }
 }
 
@@ -180,7 +148,7 @@ void setup_server()
             {
                   String
                   json = "{\n";
-                  json += "\"nixie_time\":" + String("\"") + Time_str + String("\", \n");
+                  json += "\"nixie_time\":" + String("\"") + return_time() + String("\", \n");
                   json += "\"mode_wifi\":" + String("\"") + config._mode_wifi + String("\", \n");
                   json += "\"free_heap\":" + String("\"") + formatBytes(ESP.getFreeHeap()) + String("\"");
                   json += "\n}";
@@ -195,6 +163,5 @@ void setup_server()
 
 void loop_server()
 {
-  //udp_synch();
   server.handleClient();
 }
