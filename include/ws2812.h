@@ -15,7 +15,6 @@ typedef enum
 } mode_ws2812_t;
 
 
-
 void select_effects(uint8_t effect, uint32_t color, uint8_t brightness, uint16_t speed);
 void set_collor(uint32_t color);
 
@@ -23,3 +22,5 @@ void init_ws2812(void);
 void task_ws2812(void);
 
 void mode_ws2812(mode_ws2812_t mode);
+
+uint32_t color(uint8_t index);

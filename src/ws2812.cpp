@@ -3,6 +3,12 @@
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB);
 
+uint32_t color(uint8_t index)
+{
+    uint32_t color[8] = {RED, GREEN, BLUE, WHITE, YELLOW, CYAN, MAGENTA, ORANGE};
+    return color[index];
+}
+
 
 void select_effects(uint8_t effect, uint32_t color, uint8_t brightness, uint16_t speed)
 {

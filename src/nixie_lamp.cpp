@@ -1,6 +1,7 @@
 #include "nixie_lamp.h"
 #include "rtc_module.h"
 #include "settings.h"
+#include "ws2812.h"
 
 String Time_str, Data_str;
 
@@ -381,6 +382,77 @@ void mode_count_effect(String mode, String count)
             count = mode + count;
     }
 
+    if (mode == "2")
+    {
+
+        // RED, GREEN, BLUE, WHITE, YELLOW, CYAN, MAGENTA, PURPLE, ORANGE, PINK, GRAY
+        if (count == String(RED))
+        {
+            count = "1";
+        }
+        else if (count == String(GREEN))
+        {
+            count = "2";
+        }
+        else if (count == String(BLUE))
+        {
+            count = "3";
+        }
+        else if (count == String(WHITE))
+        {
+            count = "4";
+        }
+        else if (count == String(YELLOW))
+        {
+            count = "5";
+        }
+        else if (count == String(CYAN))
+        {
+            count = "6";
+        }
+        else if (count == String(MAGENTA))
+        {
+            count = "7";
+        }
+
+        else if (count == String(ORANGE))
+        {
+            count = "8";
+        }
+
+
+
+            if (count.length() == 1)
+                count = mode + "  " + count;
+            else if (count.length() == 2)
+                count = mode + " " + count;
+            else if (count.length() == 3)
+                count = mode + count;
+    }
+
+    if (mode == "3")
+    {
+
+        if (count.length() == 1)
+            count = mode + "  " + count;
+        else if (count.length() == 2)
+            count = mode + "  " + count.substring(0);
+        else if (count.length() == 3)
+            count = mode + " " + count.substring(0) + count.substring(1);
+    }
+
+    if (mode == "4")
+    {
+        if (count.length() == 1)
+            count = mode + "  " + count;
+        else if (count.length() == 2)
+            count = mode + "   " + count.substring(0);
+        else if (count.length() == 3)
+            count = mode + "  " + count.substring(0) + count.substring(1);
+        else if (count.length() == 4)
+            count = mode + " " + count.substring(0) + count.substring(1);
+    }
+
     static unsigned long timer;
     static uint8_t cnt;
     if (millis() - timer > 200)
@@ -409,7 +481,26 @@ void nixie_lamp_task(NIXIE_MODE mode)
         break;
 
     case CURRENT_EFFECT | 1:
-            mode_count_effect("1", String(settings.object.ws2812_s.effect_t));
+
+        switch (settings.object.nixie_s.object)
+        {
+        case EFFECTS | 1:
+            mode_count_effect(String(settings.object.nixie_s.object), String(settings.object.ws2812_s.effect_t));
+            break;
+        case COLOR | 2:
+            mode_count_effect(String(settings.object.nixie_s.object), String(settings.object.ws2812_s.color_t));
+            break;
+        case BRIGHTNESS | 3:
+            mode_count_effect(String(settings.object.nixie_s.object), String(settings.object.ws2812_s.brightness_t));
+            break;
+        case SPEED | 4:
+            mode_count_effect(String(settings.object.nixie_s.object), String(settings.object.ws2812_s.speed_t));
+            break;
+
+        default:
+            break;
+        }
+
         break;
 
     default:

@@ -9,12 +9,15 @@ typedef enum
     CURRENT_DATA,
 } NIXIE_MODE;
 
+
+
 typedef enum
 {
     EFFECTS = 1,
     COLOR,
+    BRIGHTNESS,
     SPEED
-} NIXIE_MODE_WS2812;
+} WS2812_OBJECT_MODE;
 
 typedef enum
 {

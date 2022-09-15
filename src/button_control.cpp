@@ -35,18 +35,13 @@ void init_button(void)
     init_button_right();
 }
 
-void start_effects()
-{
-    static unsigned long timer;
-    static bool start_eff;
-}
-
 void one_click_button()
 {
     static unsigned long timer;
     static bool start_eff;
+    static uint8_t index_color;
 
-    if (BTN_LEFT.isClick())
+    if (settings.object.nixie_s.object == EFFECTS && BTN_LEFT.isClick())
     {
         start_eff = true;
         timer = millis();
@@ -64,7 +59,7 @@ void one_click_button()
         save_config();
     }
 
-    if (BTN_RIGHT.isClick())
+    if (settings.object.nixie_s.object == EFFECTS && BTN_RIGHT.isClick())
     {
         start_eff = true;
         timer = millis();
@@ -78,69 +73,156 @@ void one_click_button()
         {
             Serial.println("effect_t mix count");
         }
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == COLOR && BTN_LEFT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (index_color < 7)
+        {
+            Serial.println("color_t++");
+            index_color++;
+            settings.object.ws2812_s.color_t = color(index_color);
+        }
+        else
+        {
+            Serial.println("color_t max count");
+        }
 
         save_config();
     }
 
-    if (start_eff)
+    if (settings.object.nixie_s.object == COLOR && BTN_RIGHT.isClick())
     {
-        settings.object.nixie_s.mode = CURRENT_EFFECT;
-
-        if (millis() - timer > 5000)
-        {
-            timer = millis();
-            settings.object.nixie_s.mode = NORMAL;
-            start_eff = false;
-        }
-    }
-}
-
-void hold_click_button()
-{
-    static unsigned long timer;
-    static bool start_eff;
-
-
-    if (BTN_LEFT.isHolded())
-    {
-        Serial.println("LEFT CLICK HOLD");
-
         start_eff = true;
         timer = millis();
 
-        if (settings.object.ws2812_s.effect_t < 50)
+        if (index_color > 0)
         {
-            Serial.println("effect_t++");
-            settings.object.ws2812_s.effect_t++;
+            Serial.println("color_t--");
+            index_color--;
+            settings.object.ws2812_s.color_t = color(index_color);
         }
         else
         {
-            Serial.println("effect_t max count");
+            Serial.println("color_t mix count");
+        }
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == COLOR && BTN_LEFT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (settings.object.ws2812_s.color_t < 50)
+        {
+            Serial.println("color_t++");
+            settings.object.ws2812_s.color_t++;
+        }
+        else
+        {
+            Serial.println("color_t max count");
         }
 
-        //save_config();
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == BRIGHTNESS && BTN_RIGHT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (settings.object.ws2812_s.brightness_t > 0)
+        {
+            Serial.println("brightness_t--");
+            settings.object.ws2812_s.brightness_t = settings.object.ws2812_s.brightness_t - 10;
+        }
+        else
+        {
+            Serial.println("brightness_t mix count");
+        }
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == BRIGHTNESS && BTN_LEFT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (settings.object.ws2812_s.brightness_t < 250)
+        {
+            Serial.println("brightness_t++");
+            settings.object.ws2812_s.brightness_t = settings.object.ws2812_s.brightness_t + 10;
+        }
+        else
+        {
+            Serial.println("brightness_t max count");
+        }
+
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == SPEED && BTN_RIGHT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (settings.object.ws2812_s.speed_t > 100)
+        {
+            Serial.println("speed_t--");
+            settings.object.ws2812_s.speed_t = settings.object.ws2812_s.speed_t - 100;
+        }
+        else
+        {
+            Serial.println("speed_t mix count");
+        }
+        save_config();
+    }
+
+    if (settings.object.nixie_s.object == SPEED && BTN_LEFT.isClick())
+    {
+        start_eff = true;
+        timer = millis();
+
+        if (settings.object.ws2812_s.speed_t < 9900)
+        {
+            Serial.println("speed_t++");
+            settings.object.ws2812_s.speed_t = settings.object.ws2812_s.speed_t + 100;
+        }
+        else
+        {
+            Serial.println("brightness_t max count");
+        }
+
+        save_config();
+    }
+
+    ///////////////////////////HOLD////////////////////////////
+    if (BTN_LEFT.isHolded())
+    {
+        start_eff = true;
+        timer = millis();
+        // settings.object.nixie_s.object++;
+        if (settings.object.nixie_s.object++ >= 4)
+        {
+            settings.object.nixie_s.object = 4;
+        }
     }
 
     if (BTN_RIGHT.isHolded())
     {
-        Serial.println("RIGHT CLICK HOLD");
-
         start_eff = true;
         timer = millis();
-
-        if (settings.object.ws2812_s.effect_t > 0)
+        if (settings.object.nixie_s.object-- <= 1)
         {
-            Serial.println("effect_t--");
-            settings.object.ws2812_s.effect_t--;
+            settings.object.nixie_s.object = 1;
         }
-        else
-        {
-            Serial.println("effect_t mix count");
-        }
-
-        //save_config();
     }
-
+    /////////////////////////////TIMER////////////////////////////////
     if (start_eff)
     {
         settings.object.nixie_s.mode = CURRENT_EFFECT;
@@ -150,12 +232,12 @@ void hold_click_button()
             timer = millis();
             settings.object.nixie_s.mode = NORMAL;
             start_eff = false;
+            settings.object.nixie_s.object = 0;
         }
     }
 }
 
 void task_button(void)
 {
-    // one_click_button();
-    hold_click_button();
+    one_click_button();
 }
