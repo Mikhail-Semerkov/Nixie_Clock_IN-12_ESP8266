@@ -7,4 +7,4 @@ struct Config
 };
 extern Config config;
 
-void setup_config();
+void init_config(void);

@@ -95,7 +95,7 @@ void func_default_settings()
     ESP.restart();
 }
 
-void setup_config()
+void init_config(void)
 {
 
     loadConfiguration("/config.json", config);
