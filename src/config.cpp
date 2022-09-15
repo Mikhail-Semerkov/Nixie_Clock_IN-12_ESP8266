@@ -107,13 +107,13 @@ void printFile(const char *filename)
     file.close();
 }
 
-void func_default_settings()
+void func_default_settings(void)
 {
 
     Serial.println("Reset ESP32");
     Serial.println("Read default config");
     SPIFFS.remove(FILE_CONFIG);
-    ESP.restart();
+    //ESP.restart();
 }
 
 void init_config(void)

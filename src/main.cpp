@@ -29,25 +29,28 @@ unsigned long timer;
 void loop()
 {
   task_ota();
-  nixie_lamp_task(NORMAL);
+  nixie_lamp_task((NIXIE_MODE)settings.object.nixie_s.mode);
   task_ws2812();
   udp_synch_time();
   task_button();
 
-  if (millis() - timer > 1000)
-  {
-    timer = millis();
-    Serial.printf("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
-    //Serial.printf("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
-    Serial.printf("WS2812_MODE = %d\r\n", settings.object.ws2812_s.mode_ws2812);
+  // if (millis() - timer > 1000)
+  // {
+  //   timer = millis();
+  //   //Serial.printf("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
+  //   //Serial.printf("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
+  //   //Serial.printf("WS2812_MODE = %d\r\n", settings.object.ws2812_s.mode_ws2812);
+  //   // settings.config._hostname = "AAAAA WORK!!!!";
+  //   Serial.printf("NIXIE_MODE = %d\r\n", settings.object.nixie_s.mode);
 
-    // settings.config._hostname = "AAAAA WORK!!!!";
+  //   if (settings.object.ws2812_s.effect_t == 15)
+  //   {
+  //     settings.object.ws2812_s.brightness_t = 20;
+  //     settings.object.ws2812_s.speed_t = 3000;
+  //     settings.object.ws2812_s.color_t = RED;
 
-    // if (settings.object.ws2812_s.effect_t == 15)
-    // {
-    //   save_config();
-    //   settings.object.ws2812_s.brightness_t = 20;
-    //   settings.object.ws2812_s.speed_t = 3000;
-    // }
-  }
+  //     //func_default_settings();
+  //     save_config();
+  //   }
+  // }
 }

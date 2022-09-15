@@ -3,6 +3,7 @@
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB);
 
+
 void select_effects(uint8_t effect, uint32_t color, uint8_t brightness, uint16_t speed)
 {
     if (ws2812fx.getMode() != effect || ws2812fx.getColor() != color || ws2812fx.getBrightness() != brightness || ws2812fx.getSpeed() != speed)
@@ -33,7 +34,6 @@ void init_ws2812(void)
 {
     ws2812fx.init();
     ws2812fx.setBrightness(0);
-    // select_effects(settings.object.ws2812_s.effect_t, settings.object.ws2812_s.color_t, settings.object.ws2812_s.brightness_t, settings.object.ws2812_s.speed_t);
     ws2812fx.start();
 }
 

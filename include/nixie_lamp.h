@@ -3,7 +3,8 @@
 
 typedef enum
 {
-    NORMAL = 1,
+    NORMAL = 0,
+    CURRENT_EFFECT,
     CURRENT_TIME,
     CURRENT_DATA,
 } NIXIE_MODE;

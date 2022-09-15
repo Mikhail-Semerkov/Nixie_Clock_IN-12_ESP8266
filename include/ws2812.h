@@ -1,8 +1,10 @@
 #include <WS2812FX.h>
 
+//10 front
 
 #define LED_COUNT 16
-#define LED_PIN 12
+#define LED_PIN 12 //12
+
 
 typedef enum
 {

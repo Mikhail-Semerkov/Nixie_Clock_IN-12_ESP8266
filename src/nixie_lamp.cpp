@@ -1,5 +1,6 @@
 #include "nixie_lamp.h"
 #include "rtc_module.h"
+#include "settings.h"
 
 String Time_str, Data_str;
 
@@ -52,6 +53,11 @@ void Nixie_Time(String Time, int Brightness, bool AutoDots)
             }
         }
     }
+    else
+    {
+        dots = false;
+    }
+
     if (micros() - timer > Brighness_SK)
     {
         timer = micros();
@@ -363,22 +369,49 @@ void mode_normal()
     }
 }
 
+void mode_count_effect(String mode, String count)
+{
+    if (mode == "1")
+    {
+        if (count.length() == 1)
+            count = mode + "  " + count;
+        else if (count.length() == 2)
+            count = mode + " " + count;
+        else if (count.length() == 3)
+            count = mode + count;
+    }
+
+    static unsigned long timer;
+    static uint8_t cnt;
+    if (millis() - timer > 200)
+    {
+        timer = millis();
+        cnt++;
+    }
+
+    if (cnt == 1)
+    {
+        Nixie_Time(count, Brightness_Lamp, false);
+    }
+    else if (cnt == 2)
+    {
+        Nixie_Time("    ", Brightness_Lamp, false);
+        cnt = 0;
+    }
+}
 
 void nixie_lamp_task(NIXIE_MODE mode)
 {
     switch (mode)
     {
-    case NORMAL | 1:
+    case NORMAL | 0:
         mode_normal();
         break;
 
-    case CURRENT_TIME | 2:
-        mode_normal();
+    case CURRENT_EFFECT | 1:
+            mode_count_effect("1", String(settings.object.ws2812_s.effect_t));
         break;
 
-    case CURRENT_DATA | 3:
-        mode_normal();
-        break;
     default:
         break;
     }
