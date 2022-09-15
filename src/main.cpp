@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "settings.h"
 #include "config.h"
 #include "ota_wifi.h"
 #include "nixie_lamp.h"
@@ -9,19 +10,44 @@
 
 void setup()
 {
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("Booting Sketch...");
   init_config();
   init_ota();
+  Serial.printf("TEST EFFECTS = %d\r\n", settings.object.ws2812_s.effect_t);
   init_ws2812();
   init_button();
+
+  print_file();
+
+  
 }
 
+unsigned long timer;
 
 void loop()
 {
   task_ota();
-  
-  nixie_lamp_task();
+  nixie_lamp_task(NORMAL);
   task_ws2812();
   udp_synch_time();
   task_button();
+
+  if (millis() - timer > 1000)
+  {
+    timer = millis();
+    Serial.printf("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
+    //Serial.printf("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
+    Serial.printf("WS2812_MODE = %d\r\n", settings.object.ws2812_s.mode_ws2812);
+
+    // settings.config._hostname = "AAAAA WORK!!!!";
+
+    // if (settings.object.ws2812_s.effect_t == 15)
+    // {
+    //   save_config();
+    //   settings.object.ws2812_s.brightness_t = 20;
+    //   settings.object.ws2812_s.speed_t = 3000;
+    // }
+  }
 }

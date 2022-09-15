@@ -1,6 +1,8 @@
 
 #include "button_control.h"
 #include "ws2812.h"
+#include "settings.h"
+#include "config.h"
 
 #define BTN_PIN_1 0
 #define BTN_PIN_2 2
@@ -10,35 +12,19 @@ GButton BTN_RIGHT(BTN_PIN_2);
 
 void init_button_left()
 {
-    BTN_LEFT.setDebounce(90); // настройка антидребезга (по умолчанию 80 мс)
-    BTN_LEFT.setTimeout(300); // настройка таймаута на удержание (по умолчанию 500 мс)
-    // HIGH_PULL - кнопка подключена к GND, пин подтянут к VCC (BTN_PIN --- КНОПКА --- GND)
-    // LOW_PULL  - кнопка подключена к VCC, пин подтянут к GND
-    // по умолчанию стоит HIGH_PULL
+    BTN_LEFT.setDebounce(90);
+    BTN_LEFT.setTimeout(300);
     BTN_LEFT.setType(HIGH_PULL);
-    // NORM_OPEN - нормально-разомкнутая кнопка
-    // NORM_CLOSE - нормально-замкнутая кнопка
-    // по умолчанию стоит NORM_OPEN
     BTN_LEFT.setDirection(NORM_OPEN);
-    // MANUAL - нужно вызывать функцию tick() вручную
-    // AUTO - tick() входит во все остальные функции и опрашивается сама!
     BTN_LEFT.setTickMode(AUTO);
 }
 
 void init_button_right()
 {
-    BTN_RIGHT.setDebounce(90); // настройка антидребезга (по умолчанию 80 мс)
-    BTN_RIGHT.setTimeout(300); // настройка таймаута на удержание (по умолчанию 500 мс)
-    // HIGH_PULL - кнопка подключена к GND, пин подтянут к VCC (BTN_PIN --- КНОПКА --- GND)
-    // LOW_PULL  - кнопка подключена к VCC, пин подтянут к GND
-    // по умолчанию стоит HIGH_PULL
+    BTN_RIGHT.setDebounce(90);
+    BTN_RIGHT.setTimeout(300);
     BTN_RIGHT.setType(HIGH_PULL);
-    // NORM_OPEN - нормально-разомкнутая кнопка
-    // NORM_CLOSE - нормально-замкнутая кнопка
-    // по умолчанию стоит NORM_OPEN
     BTN_RIGHT.setDirection(NORM_OPEN);
-    // MANUAL - нужно вызывать функцию tick() вручную
-    // AUTO - tick() входит во все остальные функции и опрашивается сама!
     BTN_RIGHT.setTickMode(AUTO);
 }
 
@@ -95,23 +81,35 @@ void init_button(void)
 
 void task_button(void)
 {
-    static uint8_t efects;
-    BTN_LEFT.tick();
-    BTN_RIGHT.tick();
 
     if (BTN_LEFT.isClick())
     {
-        Serial.println("Click LEFT");
-        Serial.printf("Color = %d\r\n", efects);
-        efects++;
+        if (settings.object.ws2812_s.effect_t < 50)
+        {
+            Serial.println("effect_t++");
+            settings.object.ws2812_s.effect_t++;
+        }
+        else
+        {
+            Serial.println("effect_t max count");
+        }
+
+        save_config();
     }
 
     if (BTN_RIGHT.isClick())
     {
-        Serial.println("Click RIGHT");
-        Serial.printf("Color = %d\r\n", efects);
-        efects--;
-    }
 
-    select_effects(efects, RED, 20, 3000);
+        if (settings.object.ws2812_s.effect_t > 0)
+        {
+            Serial.println("effect_t--");
+            settings.object.ws2812_s.effect_t--;
+        }
+        else
+        {
+            Serial.println("effect_t mix count");
+        }
+
+        save_config();
+    }
 }
