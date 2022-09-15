@@ -8,8 +8,8 @@
 #define BTN_PIN_1 0
 #define BTN_PIN_2 2
 
-GButton BTN_LEFT(BTN_PIN_1);
-GButton BTN_RIGHT(BTN_PIN_2);
+GButton BTN_RIGHT(BTN_PIN_1);
+GButton BTN_LEFT(BTN_PIN_2);
 
 void init_button_left()
 {
