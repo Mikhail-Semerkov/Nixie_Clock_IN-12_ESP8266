@@ -1,6 +1,7 @@
 #include "udp_synch.h"
 #include "rtc_module.h"
 #include <ota_wifi.h>
+#include "trace.h"
 
 // Time UDP
 WiFiUDP ntpUDP;
@@ -16,13 +17,13 @@ void udp_synch_time()
 {
     if (WiFi.status() == WL_CONNECTED && Synch_UDP == false)
     {
-        Serial.println("WiFi Connect!");
+        serial_trace("WiFi Connect!\r\n");
         timeClient.begin();
         timeClient.setTimeOffset(3600 * timeZone);
 
         if (!timeClient.update())
         {
-            Serial.println("UDP Error!");
+            serial_trace("UDP Error!\r\n");
             timeClient.forceUpdate();
             UDP_Error = true;
         }
@@ -37,12 +38,10 @@ void udp_synch_time()
             formattedDate = timeClient.getFormattedDate();
             int splitT = formattedDate.indexOf("T");
             dayStamp = formattedDate.substring(0, splitT);
-            Serial.print("UDP DATE: ");
-            Serial.println(dayStamp);
+            serial_trace("UDP DATE: %s\r\n", dayStamp);
 
             timeStamp = formattedDate.substring(splitT + 1, formattedDate.length() - 1);
-            Serial.print("UDP TIME: ");
-            Serial.println(timeStamp);
+            serial_trace("UDP TIME: %s\r\n", timeStamp);
 
             DateTime data;
 

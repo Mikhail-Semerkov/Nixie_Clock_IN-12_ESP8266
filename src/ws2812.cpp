@@ -1,5 +1,7 @@
 #include "ws2812.h"
 #include "settings.h"
+#include "trace.h"
+#include "fotorez.h"
 
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB);
 
@@ -8,7 +10,6 @@ uint32_t color(uint8_t index)
     uint32_t color[8] = {RED, GREEN, BLUE, WHITE, YELLOW, CYAN, MAGENTA, ORANGE};
     return color[index];
 }
-
 
 void select_effects(uint8_t effect, uint32_t color, uint8_t brightness, uint16_t speed)
 {
@@ -27,7 +28,7 @@ void select_effects(uint8_t effect, uint32_t color, uint8_t brightness, uint16_t
             settings.object.ws2812_s.speed_t = speed;
         }
 
-        Serial.printf("mode = %d, color = 0x%6X, bright = %d, speed = %d\r\n", effect, color, brightness, speed);
+        serial_trace("mode = %d, color = 0x%6X, bright = %d, speed = %d\r\n", effect, color, brightness, speed);
     }
 }
 
@@ -71,4 +72,16 @@ void task_ws2812(void)
 {
     ws2812fx.service();
     mode_ws2812((mode_ws2812_t)settings.object.ws2812_s.mode_ws2812);
+
+    if (settings.object.ws2812_s.auto_brightness_t)
+    {
+        static unsigned long timer;
+
+        if (millis() - timer > 500)
+        {
+            timer = millis();
+            uint16_t Brightness = map(get_adc(), 0, 10, 0, 250);
+            settings.object.ws2812_s.brightness_t = Brightness;
+        }
+    }
 }

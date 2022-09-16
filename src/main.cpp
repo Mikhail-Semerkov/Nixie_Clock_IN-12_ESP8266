@@ -11,30 +11,31 @@
 #include "tcp_server.h"
 #include "trace.h"
 
-
-
 /////TEST_TASK////////
 void TEST_TASK(void);
 ///////////////////////
 
 void setup()
 {
+
   serial_init(115200);
-  serial_trace("\r\n");
+  serial_trace("\r\n------------------------------------\r\n");
   serial_trace("Start APP\r\n");
 
   init_config();
   init_ota();
-  Serial.printf("TEST EFFECTS = %d\r\n", settings.object.ws2812_s.effect_t);
+
+  serial_trace("TEST EFFECTS = %d\r\n", settings.object.ws2812_s.effect_t);
+
   init_ws2812();
   init_button();
 
   print_file();
 
   tcp_server_init();
+
+  settings.object.ws2812_s.auto_brightness_t = true;
 }
-
-
 
 void loop()
 {
@@ -44,14 +45,10 @@ void loop()
   udp_synch_time();
   task_button();
 
-  task_adc();
-
   loop_tcp_server();
 
   TEST_TASK();
 }
-
-
 
 void TEST_TASK(void)
 {
@@ -60,13 +57,14 @@ void TEST_TASK(void)
   {
     timer = millis();
 
-    tcp_trace("DATA = %d\r\n", timer);
+    tcp_trace("ADC = %d\r\n", get_adc());
+    serial_trace("ADC = %d\r\n", get_adc());
 
-    //Serial.printf("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
-    //Serial.printf("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
-    //Serial.printf("WS2812_MODE = %d\r\n", settings.object.ws2812_s.mode_ws2812);
-    // settings.config._hostname = "AAAAA WORK!!!!";
-    //Serial.printf("NIXIE_MODE = %d\r\n", settings.object.nixie_s.mode);
+    // serial_trace("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
+    // serial_trace("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
+    // serial_trace("WS2812_MODE = %d\r\n", settings.object.ws2812_s.mode_ws2812);
+    //  settings.config._hostname = "AAAAA WORK!!!!";
+    // serial_trace("NIXIE_MODE = %d\r\n", settings.object.nixie_s.mode);
 
     // if (settings.object.ws2812_s.effect_t == 15)
     // {

@@ -3,7 +3,7 @@
 #include "ota_wifi.h"
 #include "ws2812.h"
 #include "settings.h"
-
+#include "trace.h"
 
 uint8_t timeout_connect = 5; // second
 
@@ -13,10 +13,18 @@ const char *update_username = "admin";
 const char *update_password = "admin";
 const char *sta_ssid = "Padavan 2.4";
 const char *sta_password = "46684668";
+const char *hostname = "NIXIE_CLOCK";
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
+String IpAddress2String(const IPAddress &ipAddress)
+{
+    return String(ipAddress[0]) + String(".") +
+           String(ipAddress[1]) + String(".") +
+           String(ipAddress[2]) + String(".") +
+           String(ipAddress[3]);
+}
 
 void init_ota(void)
 {
@@ -24,15 +32,14 @@ void init_ota(void)
     WiFi.begin(sta_ssid, sta_password);
     static uint8_t count_connect;
 
-
     while (WiFi.waitForConnectResult(timeout_connect * 1000) != WL_CONNECTED)
     {
-        Serial.println("WiFi failed, retrying = " + String(count_connect + 1));
+        serial_trace("WiFi failed, retrying = %d\r\n", String(count_connect + 1));
         WiFi.begin(sta_ssid, sta_password);
         if (count_connect++ >= 2)
         {
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected ERR");
+            serial_trace("Connected ERR\r\n");
             break;
         }
     }
@@ -40,8 +47,14 @@ void init_ota(void)
     if (WiFi.status())
     {
         settings.object.wifi_s.connected = true;
-        Serial.println("Start STA");
+        serial_trace("Start STA\r\n");
         settings.object.wifi_s.mode_wifi = WIFI_STA;
+
+        if (WiFi.getHostname() != hostname)
+        {
+            WiFi.setHostname(hostname);
+        }
+
         if (!WiFi.getAutoReconnect())
         {
             WiFi.setAutoReconnect(true);
@@ -51,10 +64,12 @@ void init_ota(void)
         httpUpdater.setup(&httpServer, update_path, update_username, update_password);
         httpServer.begin();
         MDNS.addService("http", "tcp", 80);
-        Serial.print("Local IP = ");
-        Serial.println(WiFi.localIP());
-        Serial.printf("Open http://%s.local%s username '%s' and password '%s'\n", host, update_path, update_username, update_password);
 
+        char ip[12];
+        sprintf(ip, "%s", WiFi.localIP().toString().c_str());
+        serial_trace("Local IP = %s\r\n", ip);
+
+        serial_trace("Open http://%s.local%s username '%s' and password '%s'\n", host, update_path, update_username, update_password);
     }
     else
     {
@@ -62,11 +77,10 @@ void init_ota(void)
         WiFi.mode(WIFI_AP);
         settings.object.wifi_s.mode_wifi = WIFI_AP;
         WiFi.softAP("NIXIE_CLOCK", "");
-        Serial.println("Start AP");
+        serial_trace("Start AP\r\n");
         httpUpdater.setup(&httpServer, update_path, update_username, update_password);
         httpServer.begin();
-        Serial.printf("Open http://192.168.4.1%s username '%s' and password '%s'\n", update_path, update_username, update_password);
-
+        serial_trace("Open http://192.168.4.1%s username '%s' and password '%s'\r\n", update_path, update_username, update_password);
     }
 }
 
@@ -81,55 +95,55 @@ void check_wiwi(void)
         case WL_NO_SHIELD | 255:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_NO_SHIELD");
+            serial_trace("Connected WL_NO_SHIELD\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_IDLE_STATUS | 0:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_IDLE_STATUS");
+            serial_trace("Connected WL_IDLE_STATUS\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_NO_SSID_AVAIL | 1:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_NO_SSID_AVAIL");
+            serial_trace("Connected WL_NO_SSID_AVAIL\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_SCAN_COMPLETED | 2:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_SCAN_COMPLETED");
+            serial_trace("Connected WL_SCAN_COMPLETED\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_CONNECTED | 3:
             connect = WiFi.status();
             settings.object.wifi_s.connected = true;
-            Serial.println("Connected WL_CONNECTED");
+            serial_trace("Connected WL_CONNECTED\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_NORMAL;
             break;
         case WL_CONNECT_FAILED | 4:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_CONNECT_FAILED");
+            serial_trace("Connected WL_CONNECT_FAILED\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_CONNECTION_LOST | 5:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_CONNECTION_LOST");
+            serial_trace("Connected WL_CONNECTION_LOST\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_WRONG_PASSWORD | 6:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_WRONG_PASSWORD");
+            serial_trace("Connected WL_WRONG_PASSWORD\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
         case WL_DISCONNECTED | 7:
             connect = WiFi.status();
             settings.object.wifi_s.connected = false;
-            Serial.println("Connected WL_DISCONNECTED");
+            serial_trace("Connected WL_DISCONNECTED\r\n");
             settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
             break;
 

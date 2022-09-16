@@ -1,3 +1,3 @@
 #include "Arduino.h"
 
-void task_adc(void);
+uint16_t get_adc(void);

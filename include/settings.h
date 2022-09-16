@@ -13,6 +13,8 @@ struct ws2812_
     uint32_t color_t;
     uint8_t brightness_t;
     uint16_t speed_t;
+
+    uint8_t auto_brightness_t;
 };
 
 struct nixie

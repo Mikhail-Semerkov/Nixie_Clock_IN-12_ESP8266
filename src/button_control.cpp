@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "config.h"
 #include "nixie_lamp.h"
+#include "trace.h"
 
 #define BTN_PIN_1 0
 #define BTN_PIN_2 2
@@ -48,12 +49,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.effect_t < 50)
         {
-            Serial.println("effect_t++");
+            serial_trace("effect_t++\rn");
             settings.object.ws2812_s.effect_t++;
         }
         else
         {
-            Serial.println("effect_t max count");
+            serial_trace("effect_t max count\rn");
         }
 
         save_config();
@@ -66,12 +67,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.effect_t > 0)
         {
-            Serial.println("effect_t--");
+            serial_trace("effect_t--\r\n");
             settings.object.ws2812_s.effect_t--;
         }
         else
         {
-            Serial.println("effect_t mix count");
+            serial_trace("effect_t mix count\r\n");
         }
         save_config();
     }
@@ -83,13 +84,13 @@ void one_click_button()
 
         if (index_color < 7)
         {
-            Serial.println("color_t++");
+            serial_trace("color_t++\r\n");
             index_color++;
             settings.object.ws2812_s.color_t = color(index_color);
         }
         else
         {
-            Serial.println("color_t max count");
+            serial_trace("color_t max count\r\n");
         }
 
         save_config();
@@ -102,13 +103,13 @@ void one_click_button()
 
         if (index_color > 0)
         {
-            Serial.println("color_t--");
+            serial_trace("color_t--\r\n");
             index_color--;
             settings.object.ws2812_s.color_t = color(index_color);
         }
         else
         {
-            Serial.println("color_t mix count");
+            serial_trace("color_t mix count\r\n");
         }
         save_config();
     }
@@ -120,12 +121,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.color_t < 50)
         {
-            Serial.println("color_t++");
+            serial_trace("color_t++\r\n");
             settings.object.ws2812_s.color_t++;
         }
         else
         {
-            Serial.println("color_t max count");
+            serial_trace("color_t max count\r\n");
         }
 
         save_config();
@@ -138,12 +139,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.brightness_t > 0)
         {
-            Serial.println("brightness_t--");
+            serial_trace("brightness_t--\r\n");
             settings.object.ws2812_s.brightness_t = settings.object.ws2812_s.brightness_t - 10;
         }
         else
         {
-            Serial.println("brightness_t mix count");
+            serial_trace("brightness_t mix count\r\n");
         }
         save_config();
     }
@@ -155,12 +156,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.brightness_t < 250)
         {
-            Serial.println("brightness_t++");
+            serial_trace("brightness_t++\r\n");
             settings.object.ws2812_s.brightness_t = settings.object.ws2812_s.brightness_t + 10;
         }
         else
         {
-            Serial.println("brightness_t max count");
+            serial_trace("brightness_t max count\r\n");
         }
 
         save_config();
@@ -173,12 +174,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.speed_t > 100)
         {
-            Serial.println("speed_t--");
+            serial_trace("speed_t--\r\n");
             settings.object.ws2812_s.speed_t = settings.object.ws2812_s.speed_t - 100;
         }
         else
         {
-            Serial.println("speed_t mix count");
+            serial_trace("speed_t mix count\r\n");
         }
         save_config();
     }
@@ -190,12 +191,12 @@ void one_click_button()
 
         if (settings.object.ws2812_s.speed_t < 9900)
         {
-            Serial.println("speed_t++");
+            serial_trace("speed_t++\r\n");
             settings.object.ws2812_s.speed_t = settings.object.ws2812_s.speed_t + 100;
         }
         else
         {
-            Serial.println("brightness_t max count");
+            serial_trace("brightness_t max count\r\n");
         }
 
         save_config();

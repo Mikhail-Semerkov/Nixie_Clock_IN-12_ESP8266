@@ -1,4 +1,5 @@
 #include "tcp_server.h"
+#include "trace.h"
 
 #define MAX_SRV_CLIENTS 4
 
@@ -24,9 +25,8 @@ void check_tcp_client()
                     serverClients[i].stop();
                 serverClients[i] = server.available();
                 Client_Connected = i + 1;
-                Serial.print("New client: ");
-                Serial.print(Client_Connected);
-                Serial.println();
+
+                serial_trace("New client: %d\r\n", Client_Connected);
                 break;
             }
         }
@@ -35,7 +35,7 @@ void check_tcp_client()
         {
             WiFiClient serverClient = server.available();
             serverClient.stop();
-            Serial.println("Connection rejected ");
+            serial_trace("Connection rejected\r\n");
         }
     }
 }
@@ -51,13 +51,15 @@ void check_tcp_data()
             if (serverClients[i].available())
             {
                 while (serverClients[i].available())
-                    Serial.write(serverClients[i].read());
+
+                    serial_trace("%s", serverClients[i].read());
+                    //Serial.write(serverClients[i].read());
             }
         }
     }
 }
 
-void tcp_trace(const char *fmt, ...)
+void __tcp_trace(const char *fmt, ...)
 {
     char buf[1024] = {};
     va_list li;

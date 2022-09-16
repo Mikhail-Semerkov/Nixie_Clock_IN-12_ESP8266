@@ -12,8 +12,8 @@
 
 #if TCP_TRACE
 #ifndef __XC32
-#define tcp_trace tcp_trace
-void tcp_trace(const char *fmt, ...);
+#define tcp_trace __tcp_trace
+void __tcp_trace(const char *fmt, ...);
 #else
 #define print_trace printf
 #endif

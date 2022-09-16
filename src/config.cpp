@@ -1,12 +1,13 @@
 #include "config.h"
 #include "settings.h"
+#include "trace.h"
 
 void loadConfiguration(const char *filename, settings_t &settings)
 {
 
     while (!SPIFFS.begin())
     {
-        Serial.println(F("Failed to initialize SD library"));
+        serial_trace("Failed to initialize SD library\r\n");
         delay(1000);
     }
 
@@ -15,25 +16,12 @@ void loadConfiguration(const char *filename, settings_t &settings)
     JsonObject &root = jsonBuffer.parseObject(configFile);
 
     if (!root.success())
-        Serial.println(F("Failed to read file, using default configuration"));
+        serial_trace("Failed to read file, using default configuration\r\n");
 
     settings.object.ws2812_s.effect_t = (uint8_t)root["effect"];
     settings.object.ws2812_s.color_t = uint32_t(root["color"]);
     settings.object.ws2812_s.brightness_t = (uint8_t)(root["brightness"]);
     settings.object.ws2812_s.speed_t = (uint16_t)(root["speed"]);
-
-    //Serial.printf("TEST EFFECTS LOAD = %d\r\n", settings.object.ws2812_s.effect_t);
-
-    // settings.config._mode_wifi = root["mode_wifi"] | "WIFI_STA";
-    // settings.config._wifi_ssid = root["wifi_ssid"] | "Padavan 2.4";
-    // settings.config._wifi_pass = root["wifi_pass"] | "46684668";
-    // settings.config._wifi_ssid_ap = root["wifi_ssid_ap"] | "Nixie Clock";
-    // settings.config._wifi_pass_ap = root["wifi_pass_ap"] | "12345678";
-    // settings.config._dhcp = root["dhcp"] | "0";
-    // settings.config._static_ip = root["static_ip"] | "192.168.1.1";
-    // settings.config._static_mask = root["static_mask"] | "255.255.252.0";
-    // settings.config._static_gataway = root["static_gataway"] | "192.168.1.1";
-    // settings.config._hostname = root["hostname"] | "Nixie_Clock";
 
     configFile.close();
 }
@@ -46,7 +34,7 @@ bool saveConfiguration(const char *filename, const settings_t &settings)
     File file = SPIFFS.open(filename, "a");
     if (!file)
     {
-        Serial.println(F("Failed to create file"));
+        serial_trace("Failed to create file\r\n");
         return false;
     }
 
@@ -74,7 +62,7 @@ bool saveConfiguration(const char *filename, const settings_t &settings)
 
     if (root.printTo(file) == 0)
     {
-        Serial.println(F("Failed to write to file"));
+        serial_trace("Failed to write to file\r\n");
         return false;
     }
 
@@ -88,47 +76,47 @@ void printFile(const char *filename)
     File file = SPIFFS.open(FILE_CONFIG, "r");
     if (!file)
     {
-        Serial.println(F("Failed to read file"));
+        serial_trace("Failed to read file\r\n");
         return;
     }
-    Serial.println();
-    Serial.println("--------------------");
+    serial_trace("\r\n--------------------\r\n");
     while (file.available())
     {
         char data = (char)file.read();
-        Serial.print(data);
-        if (data == ','){
-            Serial.println();
-            Serial.println("--------------------");
+
+        serial_trace("%c", data);
+        
+        
+        if (data == ',')
+        {
+            serial_trace("\r\n--------------------\r\n");
         }
     }
-    Serial.println();
-    Serial.println("--------------------");
+    serial_trace("\r\n--------------------\r\n\r\n");
     file.close();
 }
 
 void func_default_settings(void)
 {
 
-    Serial.println("Reset ESP32");
-    Serial.println("Read default config");
+    serial_trace("Reset ESP32\r\n");
+    serial_trace("Read default config\r\n");
     SPIFFS.remove(FILE_CONFIG);
-    //ESP.restart();
+    // ESP.restart();
 }
 
 void init_config(void)
 {
-
     loadConfiguration(FILE_CONFIG, settings);
 }
 
-
 void save_config(void)
 {
-    while(!saveConfiguration(FILE_CONFIG, settings)){ }
-    Serial.println("CONFIG SAVE");
+    while (!saveConfiguration(FILE_CONFIG, settings))
+    {
+    }
+    serial_trace("CONFIG SAVE");
 }
-
 
 void print_file(void)
 {
