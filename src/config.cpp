@@ -16,7 +16,16 @@ void loadConfiguration(const char *filename, settings_t &settings)
     JsonObject &root = jsonBuffer.parseObject(configFile);
 
     if (!root.success())
+    {
         serial_trace("Failed to read file, using default configuration\r\n");
+        settings.object.ws2812_s.effect_t = 0;
+        settings.object.ws2812_s.color_t = 0;
+        settings.object.ws2812_s.brightness_t = 20;
+        settings.object.ws2812_s.speed_t = 3000;
+
+        save_config();
+    }
+        
 
     settings.object.ws2812_s.effect_t = (uint8_t)root["effect"];
     settings.object.ws2812_s.color_t = uint32_t(root["color"]);
@@ -112,9 +121,7 @@ void init_config(void)
 
 void save_config(void)
 {
-    while (!saveConfiguration(FILE_CONFIG, settings))
-    {
-    }
+    while (!saveConfiguration(FILE_CONFIG, settings)){ }
     serial_trace("CONFIG SAVE");
 }
 
