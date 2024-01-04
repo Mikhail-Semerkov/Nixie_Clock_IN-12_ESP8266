@@ -5,13 +5,23 @@
 #include "settings.h"
 #include "trace.h"
 
+typedef struct wifi_data_t
+{
+    wl_status_t state;
+    uint8_t mode;
+    String ip_addr;
+}wifi_data;
+
+
+wifi_data wifiData;
+
 uint8_t timeout_connect = 5; // second
 
 const char *host = "nixie-clock";
 const char *update_path = "/ota";
 const char *update_username = "admin";
 const char *update_password = "admin";
-const char *sta_ssid = "Padavan 2.4";
+const char *sta_ssid = "Keenetic";
 const char *sta_password = "46684668";
 const char *hostname = "NIXIE_CLOCK";
 
@@ -30,125 +40,35 @@ void init_ota(void)
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(sta_ssid, sta_password);
-    static uint8_t count_connect;
 
-    while (WiFi.waitForConnectResult(timeout_connect * 1000) != WL_CONNECTED)
-    {
-        serial_trace("WiFi failed, retrying = %d\r\n", String(count_connect + 1));
-        WiFi.begin(sta_ssid, sta_password);
-        if (count_connect++ >= 2)
-        {
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected ERR\r\n");
-            break;
-        }
-    }
+    if (WiFi.getHostname() != hostname)
+    WiFi.setHostname(hostname);
 
-    if (WiFi.status())
-    {
-        settings.object.wifi_s.connected = true;
-        serial_trace("Start STA\r\n");
-        settings.object.wifi_s.mode_wifi = WIFI_STA;
-
-        if (WiFi.getHostname() != hostname)
-        {
-            WiFi.setHostname(hostname);
-        }
-
-        if (!WiFi.getAutoReconnect())
-        {
-            WiFi.setAutoReconnect(true);
-        }
-
-        MDNS.begin(host);
-        httpUpdater.setup(&httpServer, update_path, update_username, update_password);
-        httpServer.begin();
-        MDNS.addService("http", "tcp", 80);
-
-        char ip[12];
-        sprintf(ip, "%s", WiFi.localIP().toString().c_str());
-        serial_trace("Local IP = %s\r\n", ip);
-
-        serial_trace("Open http://%s.local%s username '%s' and password '%s'\n", host, update_path, update_username, update_password);
-    }
-    else
-    {
-        settings.object.wifi_s.connected = false;
-        WiFi.mode(WIFI_AP);
-        settings.object.wifi_s.mode_wifi = WIFI_AP;
-        WiFi.softAP("NIXIE_CLOCK", "");
-        serial_trace("Start AP\r\n");
-        httpUpdater.setup(&httpServer, update_path, update_username, update_password);
-        httpServer.begin();
-        serial_trace("Open http://192.168.4.1%s username '%s' and password '%s'\r\n", update_path, update_username, update_password);
-    }
+    MDNS.begin(host);
+    httpUpdater.setup(&httpServer, update_path, update_username, update_password);
+    httpServer.begin();
+    MDNS.addService("http", "tcp", 80);
 }
 
 void check_wiwi(void)
 {
-    static wl_status_t connect;
+    const wl_status_t status = WiFi.status();
 
-    if (connect != WiFi.status())
+    if (wifiData.state != status)
     {
-        switch (WiFi.status())
-        {
-        case WL_NO_SHIELD | 255:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_NO_SHIELD\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_IDLE_STATUS | 0:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_IDLE_STATUS\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_NO_SSID_AVAIL | 1:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_NO_SSID_AVAIL\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_SCAN_COMPLETED | 2:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_SCAN_COMPLETED\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_CONNECTED | 3:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = true;
-            serial_trace("Connected WL_CONNECTED\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_NORMAL;
-            break;
-        case WL_CONNECT_FAILED | 4:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_CONNECT_FAILED\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_CONNECTION_LOST | 5:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_CONNECTION_LOST\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_WRONG_PASSWORD | 6:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_WRONG_PASSWORD\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
-        case WL_DISCONNECTED | 7:
-            connect = WiFi.status();
-            settings.object.wifi_s.connected = false;
-            serial_trace("Connected WL_DISCONNECTED\r\n");
-            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
-            break;
+        wifiData.state = status;
 
-        default:
-            break;
+        if(wifiData.state == WL_CONNECTED)
+        {
+            settings.object.wifi_s.connected = true;
+            serial_trace("WIFI: WL_CONNECTED\r\n");
+            settings.object.ws2812_s.mode_ws2812 = MODE_NORMAL;
+        }
+        else
+        {
+            settings.object.wifi_s.connected = false;
+            serial_trace("WIFI: %d\r\n", wifiData.state);
+            settings.object.ws2812_s.mode_ws2812 = MODE_ERROR;
         }
     }
 }

@@ -10,7 +10,6 @@ typedef enum
 } NIXIE_MODE;
 
 
-
 typedef enum
 {
     EFFECTS = 1,

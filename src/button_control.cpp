@@ -240,5 +240,12 @@ void one_click_button()
 
 void task_button(void)
 {
+
+    if(BTN_LEFT.isHold() && BTN_RIGHT.isHold())
+    {
+        serial_trace("RESTART\r\n");
+        ESP.restart();
+    }
+
     one_click_button();
 }

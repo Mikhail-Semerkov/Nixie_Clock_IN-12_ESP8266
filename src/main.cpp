@@ -57,8 +57,8 @@ void TEST_TASK(void)
   {
     timer = millis();
 
-    tcp_trace("ADC = %d\r\n", get_adc());
-    serial_trace("ADC = %d\r\n", get_adc());
+    //tcp_trace("ADC = %d\r\n", get_adc());
+    //serial_trace("ADC = %d\r\n", get_adc());
 
     // serial_trace("EFFECT = %d\r\n", settings.object.ws2812_s.effect_t);
     // serial_trace("WIFI_MODE = %d\r\n", settings.object.wifi_s.mode_wifi);
